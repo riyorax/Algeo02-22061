@@ -30,8 +30,10 @@ This is the vector algebra implementation of reverse image search tool. The vect
 
 
 ## Libraries Used
-- numpy
-- Something else - version 1.0
+- flask (3.0.0)
+- opencv-python (4.8.1.78)
+- numpy (1.26.1)
+- pillow (10.1.0)
 
 
 ## Features
@@ -50,7 +52,7 @@ Needs Python (py) in order to run. Python can be found at [their website](https:
 
 ```shell
 cd ./src
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 I know when using pip, it’s good practice to use a virtual environment, but I don't care right now. So, happy developing :D
@@ -75,12 +77,11 @@ Project is: _in progress_.
 ## Room for Improvement
 
 Room for improvement:
-- Improvement to be done 1
-- Improvement to be done 2
+- None currently
 
 To do:
-- Feature to be added 1
-- Feature to be added 2
+- CBIR with color parameter
+- CBIR with texture parameter
 
 
 ## Acknowledgements
@@ -91,4 +92,4 @@ To do:
 ## Links
 - [Spesifikasi Tugas Besar 2 IF2123 Algeo 2023/2024](https://docs.google.com/document/d/1HVDyywnUdNz9hStgx5ZLqHypK89hWH8qfERJOiDw6KA/edit).
 - [This Repository](https://github.com/riyorax/Algeo02-22061)
-- [The Report]()
+- [The Report [email std]](https://docs.google.com/document/d/1MDdhX6vOATXgypNhPfJXa2OcuCtfw7UXOzsRt0Tfzss/edit?usp=sharing)
