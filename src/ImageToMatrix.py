@@ -34,4 +34,7 @@ def RGBtoHSV(r,g,b):
 
     return numpy.array([h,s,v])
 
+def RGBtoGrayScale(r,g,b):
+    return 0.29*r + 0.587*g + 0.114*b
+
 # def arrayRGBToarrayHSV(array_rgb):
