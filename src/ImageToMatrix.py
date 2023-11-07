@@ -1,46 +1,31 @@
-import numpy
 import cv2
+import numpy as np
 
 def ImageToMatrix(path):
     img_bgr = cv2.imread(path)
-    img_bgr = numpy.array(img_bgr)
-    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-    img_rgb = img_rgb.astype('float64')
+    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB).astype('float64')
     return img_rgb
 
-def RGBtoHSV(r,g,b):
-    r = r/255
-    g = g/255
-    b = b/255
-    Cmax = max(r,g,b)
-    Cmin = min(r,g,b)
+def RGBtoHSV(rgb_matrix):
+    rgb_normalized = rgb_matrix / 255.0
+    r, g, b = rgb_normalized[:, :, 0], rgb_normalized[:, :, 1], rgb_normalized[:, :, 2]
+
+    Cmax = np.max(rgb_normalized, axis=-1)
+    Cmin = np.min(rgb_normalized, axis=-1)
     Delta = Cmax - Cmin
-    if Delta == 0:
-        h = 0
-    elif Delta == r:
-        h = 60*(((g-b)/Delta)%6)
-    elif Delta == g:
-        h = 60*(((b-r)/Delta)+2)
-    else:
-        h = 60*(((r-g)/Delta)+4)
-    
-    if Cmax == 0:
-        s = 0
-    else:
-        s = Delta/Cmax
-    
+
+    h = np.where(Delta == 0, 0,
+                np.where(Cmax == r, 60 * ((g - b) / Delta % 6), #Kasus Cmax = r
+                np.where(Cmax == g, 60 * ((b - r) / Delta + 2), #Kasus Cmax = g
+                60 * ((r - g) / Delta + 4)))) #Kasus Cmax = b
+
+    s = np.where(Cmax == 0, 0, Delta / Cmax)
     v = Cmax
 
-    return numpy.array([h,s,v])
+    hsv_matrix = np.dstack((h, s, v))
+    
+    return hsv_matrix
 
-def RGBtoGrayScale(r,g,b):
-    return 0.29*r + 0.587*g + 0.114*b
-
-def matrixRGBTomatrixHSV(matrix_rgb):
-    for i in range(matrix_rgb.shape[0]):
-        for j in range(matrix_rgb.shape[1]):
-            r = matrix_rgb[i][j][0]
-            g = matrix_rgb[i][j][1]
-            b = matrix_rgb[i][j][2]
-            matrix_rgb[i][j] = RGBtoHSV(r,g,b)
-    return matrix_rgb
+img_rgb = ImageToMatrix('src/4keh.jpg')
+result = RGBtoHSV(img_rgb)
+print(result)
