@@ -1,4 +1,5 @@
 import ImageToMatrix as imt
+import cosine_similiarity as cs
 import cv2
 import numpy as np
 import tqdm
@@ -19,7 +20,7 @@ def glcm(path):
             try:
                 nextpx = round(img[i][j+1])     # next pixel
             except IndexError:                  # catch out of pixel error
-                continue
+                continue                        # ignore it, insignificant edge pixel
             glcm[firstpx][nextpx] += 1          # at co-occurrence matrix, add if the pixel pair is found
     return glcm
 
@@ -28,14 +29,29 @@ def glcmNorm(glcm):
     glcmNorm = symMat/np.sum(symMat)
     return glcmNorm
 
-def contrast():
-    pass
+def contrast(glcmNorm):
+    sum = 0
+    for i in range(glcmNorm.shape[0]):
+        for j in range(glcmNorm.shape[1]):
+            sum += glcmNorm[i][j]*(i-j)**2
+    return sum
 
-def homogeneity():
-    pass
+def homogeneity(glcmNorm):
+    sum_numerator = 0
+    sum_denominator = 0
+    for i in range(glcmNorm.shape[0]):
+        for j in range(glcmNorm.shape[1]):
+            sum_numerator += glcmNorm[i][j]*(i-j)
+            sum_denominator += 1 + ((i-j)**2)
+    return sum_numerator/sum_denominator
 
-def entropy():
-    pass
+def entropy(glcmNorm):
+    sum = 0
+    for i in range(glcmNorm.shape[0]):
+        for j in range(glcmNorm.shape[1]):
+            if glcmNorm[i][j] != 0:
+                sum += glcmNorm[i][j] * np.log10(glcmNorm[i][j])
+    return -sum
 
 def transpose(matrix):
     tmatrix = [[0 for j in range(256)] for i in range(256)];
@@ -43,9 +59,20 @@ def transpose(matrix):
         for j in range(256):
             tmatrix[i][j] = matrix[j][i]
     return tmatrix
-            
-Cpath = ".\\waifu.jpg"
+
+def glcmVector(glcmNorm):
+    return [contrast(glcmNorm), homogeneity(glcmNorm), entropy(glcmNorm)]
+
+def similarity(path1, path2):
+    v1 = glcmVector(glcmNorm(glcm(path1)))
+    v2 = glcmVector(glcmNorm(glcm(path2)))
+    print(v1)
+    print(v2)
+    return cs.cosine_similiarity(v1, v2)
+
+Cpath = ".\\waifu2.jpeg"
+Dpath = ".\\waifu.jpg"
 stime = time.time()
-print(glcmNorm(glcm(Cpath)))
+print(similarity(Cpath, Dpath))
 ftime = time.time()
 print(ftime-stime)
