@@ -1,7 +1,126 @@
-left {
-    float: left;
+.title {
+    text-align: center;
 }
 
-right {
-    float: right;
+.content {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh;
 }
+
+.left {
+    height: 150 px;
+    width: 40%;
+    background-color: aquamarine;
+}
+
+/* .image {
+    background-color: bisque;
+    /* display: flex; */
+    /* justify-content: center; 
+    align-items: center; 
+    height: 200 px; 
+} */ */
+
+.top_image_box {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh;
+}
+
+.toggle {
+    background-color: aqua;
+}
+
+.insert_total_image {
+    background-color: beige;
+}
+
+.button_take_a_photo {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 30px; 
+    background-color: pink;
+}
+.button_upload_image {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 30px; 
+    background-color: pink;
+}
+.button_select_dataset {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 30px; 
+    background-color: pink;
+}
+
+.right {
+    height: 150 px;
+    width: 50%;
+    background-color: yellow;
+}
+
+.image_box {
+    height: 80 px;
+    background-color: yellow;
+}
+
+.bottom_image_box {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 30px; 
+    background-color: pink;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .toggle-switch input[type="checkbox"] {
+    display: none;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 50%;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  .toggle-switch input[type="checkbox"]:checked + .slider {
+    left: 50%;
+    right: 0;
+    background-color: #2196F3;
+  }
+  
+  .toggle-switch input[type="checkbox"]:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  
