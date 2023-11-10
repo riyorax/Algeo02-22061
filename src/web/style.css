@@ -45,12 +45,11 @@ body {
     display: block;
 }
 
-.button {
+.input [type = submit]{
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 15px;
-    /* height: 100%; */
 }
 
 .upload {
@@ -144,4 +143,78 @@ body {
     ::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
+}
+
+/* TEST */
+
+.gallery{
+	width: 100%;
+	/* float: left; */
+	/* margin-right: 50px; */
+}
+
+.gallery .image-item .item{
+	float: left;
+	width:25%;
+	position: relative;
+}
+.gallery .image-item .item.hide{
+	display: none;
+}
+.gallery .image-item .item.show{
+	display: block;
+	animation: show .5s ease;
+}
+@keyframes show{
+    0%{
+    	opacity:0;
+    	transform: scale(0.9);
+    }
+    100%{
+    	opacity:1;
+    	transform: scale(1);
+    }
+}
+
+
+.gallery .image-item .item img{
+	width: 100%;
+	display: block;
+}
+.gallery .image-item .item .caption{
+	position: absolute;
+	left:0px;
+	bottom:0;
+	background-color: rgba(0,0,0,.5);
+	padding:10px;
+	width: 100%;
+	color:#ffffff;
+	text-align: center;
+}
+.gallery .pagination{
+	width: 100%;
+	float: left;
+	padding:15px;
+	text-align: center;
+}
+.gallery .pagination div{
+	display: inline-block;
+	margin:0 10px;
+}
+.gallery .pagination .page{
+	color:gray;
+}
+.gallery .pagination .prev,.gallery .pagination .next{
+ color:#000;
+ border:1px solid #000;
+ font-size:15px;
+ padding:7px 15px;
+ cursor: pointer;
+}
+
+.gallery .pagination .prev.disabled,
+.gallery .pagination .next.disabled{
+	border-color: gray;
+	color:gray;
+	pointer-events: none;
 }
