@@ -7,60 +7,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">Algeo Lens</h1>
-        </div>
-        <div class="content">
-            <div class="left">
-                <div class="leftbox">
-                    <div class="image">
-                        <img src="meme.jpeg" alt="meme.jpeg">
-                    </div>
-                    <div class="button">
-                        <div class="button_take_a_photo">
-                            <button type="button">Take a Photo</button>
-                        </div>
-                        <div class="button_upload_image">
-                            <form action="/upload" method="post" enctype="multipart/form-data">
-                                <input type="file" name="file">
-                                <input type="submit" value="Upload">
-                        </div>
-                        <div class="button_select_dataset">
-                            <button type="button">Select Dataset</button>
-                        </div>
-                    </div>
+    <div class="title">
+        <h1>ALGEO LENS</h1>
+    </div>
+    
+    <div class="main-container">
+        <div class="input-container">
+            <div class="input-div">
+                <img class="placeholder-img" src="placeholder.png" alt="Placeholder Image">
+                <div class="button">
+                    <button class="upload">Take A Photo</button>
                 </div>
-            </div>
-            <div class="right">
-                <div class="image_box">
-                    <div class="top_image_box">
-                        <div class="toggle">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="toggle" />
-                                <span class="slider"></span>
-                              </label>
-                        </div>
-                        <div class="insert_total_image">
-
-                        </div>
-                    </div>
-                    <div class="body image box">
-                        {% for image_file, description in image_data.items() %}
-                            <div class="image_container">
-                                <img src="{{ url_for('static', filename='images/' + image_data) }}" alt="{{ image_data }}">
-                                <div class="description">{{ description }}</div>
-                            </div>
-                        { % endfor %}
-                    </div>
-                    <div class="bottom_image_box">
-                        <button type="button">Download Image</button>
-                    </div>
+                <div class="button">
+                    <button class="upload">Upload Image</button>
+                </div>
+                <div class="button">
+                    <button class="upload">Select Dataset</button>
                 </div>
             </div>
         </div>
-        <div class="footer">
-
+        <div class="side-div">
+            <span class="left-text">Colour</span>
+            <label class="toggle-container">
+                <input type="checkbox" class="toggle-input">
+                <span class="toggle-slider"></span>
+            </label>
+            <span class="right-text">Texture</span>
         </div>
     </div>
 </body>
