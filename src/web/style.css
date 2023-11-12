@@ -65,6 +65,7 @@ body {
 
 .side-div {
     padding: 20px;
+    margin-right: 60px;
     flex-grow: 1; 
 }
 
@@ -145,25 +146,22 @@ body {
     }
 }
 
-/* TEST */
-
 .gallery{
 	width: 100%;
-	/* float: left; */
-	/* margin-right: 50px; */
+	float: left;
+	margin-top: 20px;
 }
-
-.gallery .image-item .item{
+.gallery .gallery-items .item{
 	float: left;
 	width:25%;
 	position: relative;
 }
-.gallery .image-item .item.hide{
+.gallery .gallery-items .item.hide{
 	display: none;
 }
-.gallery .image-item .item.show{
+.gallery .gallery-items .item.show{
 	display: block;
-	animation: show .5s ease;
+	animation: show .5s ease-out;
 }
 @keyframes show{
     0%{
@@ -177,17 +175,19 @@ body {
 }
 
 
-.gallery .image-item .item img{
+.gallery .gallery-items .item img{
 	width: 100%;
 	display: block;
 }
-.gallery .image-item .item .caption{
+.gallery .gallery-items .item .caption{
 	position: absolute;
 	left:0px;
 	bottom:0;
 	background-color: rgba(0,0,0,.5);
-	padding:10px;
+	/* padding:10px; */
 	width: 100%;
+    padding-top: 7px;
+    padding-bottom: 7px;
 	color:#ffffff;
 	text-align: center;
 }
@@ -217,4 +217,17 @@ body {
 	border-color: gray;
 	color:gray;
 	pointer-events: none;
+}
+
+.gallery-items {
+    width: 300px; /* Set your desired width for the container */
+    height: 200px; /* Set your desired height for the container */
+    overflow: hidden;
+    position: relative;
+}
+
+.gallery-items img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This property will make the image cover the container while maintaining its aspect ratio */
 }

@@ -3,11 +3,11 @@
  const prev=document.querySelector(".prev");
  const next=document.querySelector(".next");
  const page=document.querySelector(".page-num");
- const maxItem=2;
+ const maxItem=12;
  let index=1;
   
   const pagination=Math.ceil(galleryItems.length/maxItem);
-  console.log(pagination)
+//   console.log(pagination)
 
   prev.addEventListener("click",function(){
     index--;
@@ -49,9 +49,20 @@
           galleryItems[i].classList.add("show");
   	    }
   	    page.innerHTML=index;
-  	 } 	 	
+  	 }
+
+  	 	
   }
+
   window.onload=function(){
   	showItems();
   	check();
   }
+
+
+
+
+
+
+
+
