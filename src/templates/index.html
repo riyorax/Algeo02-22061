@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algeo02-22061</title>
+    <link rel="stylesheet" href="../static/index_style.css">
+</head>
+<body>
+    <div class="title">
+        <h1>ALGEO LENS</h1>
+    </div>
+    <div class="menu-bar">
+        <a href="aboutus.html" class="menu-item">About Us</a>
+        <a href="howtouse.html" class="menu-item">How to Use</a>
+        <a href="searchengineconcept.html" class="menu-item">Search Engine Concept</a>
+    </div>
+    <div class="main-container">
+        <div class="box">
+            <div class="side-div-top">
+                <span class="left-text">Colour</span>
+                <label class="toggle-container">
+                    <input type="checkbox" class="toggle-input">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="right-text">Texture</span>
+            </div>
+            <form method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
+                <h3>Upload Image</h3>
+                <input type="file" name="single_file" id="single_file">
+                <br>
+                <h3>Upload Dataset</h3>
+                <input type="file" name="multiple_files" id="multiple_files" multiple>
+                <br>
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+    </div>
+    <script>
+        function checkUploadAndRedirect() {
+            var singleFileInput = document.getElementById('single_file');
+            var multipleFilesInput = document.getElementById('multiple_files');
+
+            if (!singleFileInput.value || !multipleFilesInput.value) {
+                alert("Insert image and/or dataset!");
+                return false; 
+            }
+            redirectToResult();
+            return false;
+        }
+        function redirectToResult() {
+            window.location.href = "result.html";
+        }
+    </script>
+</body>
+</html>
