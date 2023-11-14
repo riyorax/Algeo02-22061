@@ -5,8 +5,8 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-SINGLE_UPLOAD_FOLDER = 'single_uploads'
-MULTIPLE_UPLOAD_FOLDER = 'multiple_uploads'
+SINGLE_UPLOAD_FOLDER = 'src/uploads/single_uploads'
+MULTIPLE_UPLOAD_FOLDER = 'src/uploads/multiple_uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['SINGLE_UPLOAD_FOLDER'] = SINGLE_UPLOAD_FOLDER
