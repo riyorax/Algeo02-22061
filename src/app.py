@@ -35,5 +35,21 @@ def upload_files():
 
     return redirect(url_for('index'))
 
+@app.route("/result.html")
+def result():
+    return render_template('result.html')
+
+@app.route('/aboutus.html')
+def about_us():
+    return render_template("aboutus.html")
+
+@app.route('/howtouse.html')
+def howtouse():
+    return render_template("howtouse.html")
+
+@app.route('/searchengineconcept.html')
+def searchengineconcept():
+    return render_template("searchengineconcept.html")
+
 if __name__ == '__main__':
     app.run(debug=True)
