@@ -25,7 +25,7 @@
                 </label>
                 <span class="right-text">Texture</span>
             </div>
-            <form method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
+            <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
                 <h3>Upload Image</h3>
                 <input type="file" name="single_file" id="single_file">
                 <br>
@@ -43,12 +43,11 @@
             var singleFileInput = document.getElementById('single_file');
             var multipleFilesInput = document.getElementById('multiple_files');
 
-            if (!singleFileInput.value || !multipleFilesInput.value) {
-                alert("Insert image and/or dataset!");
-                return false; 
+            if (!singleFileInput.files.length && !multipleFilesInput.files.length) {
+                alert("Please insert an image and/or dataset!");
+                return false;
             }
-            redirectToResult();
-            return false;
+            return true;
         }
         function redirectToResult() {
             window.location.href = "result.html";
