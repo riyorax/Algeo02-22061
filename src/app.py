@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
 import shutil
+from function import CBIR_Colour as CC
+from function import CBIR_Texture as CT
 
 app = Flask(__name__)
 
@@ -31,22 +33,6 @@ def empty_folder(folder_path):
             except Exception as e:
                 print('Failed to delete %s. Reason: %s' % (file_path, e))
 
-# @app.route('/', methods=['POST'])
-# def upload_files():
-
-#     single_file = request.files.get('single_file')
-#     if single_file and allowed_file(single_file.filename):
-#         single_filename = os.path.join(app.config['SINGLE_UPLOAD_FOLDER'], secure_filename(single_file.filename))
-#         single_file.save(single_filename)
-
-#     multiple_files = request.files.getlist('multiple_files')
-#     for file in multiple_files:
-#         if file and allowed_file(file.filename):
-#             multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
-#             file.save(multiple_filename)
-
-#     return redirect(url_for('index'))
-
 @app.route('/', methods=['POST'])
 def upload_files():
 
@@ -66,6 +52,11 @@ def upload_files():
         if file and allowed_file(file.filename):
             multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
             file.save(multiple_filename)
+    
+    if 'multiple_files' in request.files:
+        CC.DatasetToColourJSON('src/uploads/multiple_uploads', 'src/data/colour.json')
+
+        CT.DatasetToTextureJSON('src/uploads/multiple_uploads', 'src/data/texture.json')
 
     return redirect(url_for('result'))
 

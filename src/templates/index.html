@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="../static/index_style.css">
 </head>
 <body>
+    <div id="loading" style="display: none">
+        <img src="static/assets/kuru2.gif" alt="Loading">
+        <span>Loading<span class="dots"></span></span>
+    </div>
     <div class="title">
         <h1>ALGEO LENS</h1>
     </div>
@@ -47,6 +51,7 @@
                 alert("Please insert an image and/or dataset!");
                 return false;
             }
+            document.getElementById('loading').style.display = 'flex';
             return true;
         }
         function redirectToResult() {

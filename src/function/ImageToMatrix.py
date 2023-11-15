@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import cosine_similiarity as cs
 
 def ImageToMatrix(path):
     img_bgr = cv2.imread(path)
