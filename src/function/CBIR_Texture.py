@@ -30,6 +30,10 @@ def contrast(glcm_norm):
     i, j = np.indices(glcm_norm.shape)
     return np.sum(glcm_norm * (i - j) ** 2)
 
+def energy(glcm_norm):
+    # https://iopscience.iop.org/article/10.1088/1742-6596/1591/1/012028/pdf
+    return np.sum(glcm_norm ** 2)
+
 def homogeneity(glcm_norm):
     i, j = np.indices(glcm_norm.shape)
     return np.sum(glcm_norm / (1 + (i - j) ** 2))
@@ -39,7 +43,7 @@ def entropy(glcm_norm):
     return -np.sum(glcm_norm[mask] * np.log10(glcm_norm[mask]))
 
 def glcm_features(glcm_norm):
-    return np.array([contrast(glcm_norm), homogeneity(glcm_norm), entropy(glcm_norm)])
+    return np.array([contrast(glcm_norm), energy(glcm_norm), homogeneity(glcm_norm), entropy(glcm_norm)])
 
 
 def process_texture_image(filename, folder_path):
