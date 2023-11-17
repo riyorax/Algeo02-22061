@@ -26,6 +26,17 @@ def glcm(path):
 def glcmNorm(glcm_matrix):
     return glcm_matrix / glcm_matrix.sum()
 
+def glcmMean(glcm_norm):
+    # https://support.echoview.com/WebHelp/Windows_And_Dialog_Boxes/Dialog_Boxes/Variable_Properties_Dialog_Box/Operator_Pages/GLCM_Texture_Features.htm
+    i, j = np.indices(glcm_norm.shape)
+    return np.sum(i * glcm_norm)
+
+def glcmVariance(glcm_norm):
+    # https://support.echoview.com/WebHelp/Windows_And_Dialog_Boxes/Dialog_Boxes/Variable_Properties_Dialog_Box/Operator_Pages/GLCM_Texture_Features.htm
+    i, j = np.indices(glcm_norm.shape)
+    mean = glcmMean(glcm_norm)
+    return np.sum(glcm_norm * (i - mean) ** 2)
+
 def contrast(glcm_norm):
     i, j = np.indices(glcm_norm.shape)
     return np.sum(glcm_norm * (i - j) ** 2)
@@ -38,13 +49,34 @@ def homogeneity(glcm_norm):
     i, j = np.indices(glcm_norm.shape)
     return np.sum(glcm_norm / (1 + (i - j) ** 2))
 
+def correlation(glcm_norm):
+    i, j = np.indices(glcm_norm.shape)
+    mean = glcmMean(glcm_norm)
+    variance = glcmVariance(glcm_norm)
+    return np.sum(glcm_norm * ((i - mean) * (j - mean))/variance)
+
 def entropy(glcm_norm):
     mask = glcm_norm > 0
     return -np.sum(glcm_norm[mask] * np.log10(glcm_norm[mask]))
 
-def glcm_features(glcm_norm):
-    return np.array([contrast(glcm_norm), energy(glcm_norm), homogeneity(glcm_norm), entropy(glcm_norm)])
+def shade(glcm_norm):
+    i, j = np.indices(glcm_norm.shape)
+    mean = glcmMean(glcm_norm)
+    variance = glcmVariance(glcm_norm)
+    c = correlation(glcm_norm)
+    a = np.sum((((i + j - (2 * mean)) ** 3) * glcm_norm)/((variance ** (3/2)) * (np.sqrt(2 * (1 + c)) ** 3)))
+    return np.sign(a) * (np.abs(a) ** (1/3))
 
+def prominence(glcm_norm):
+    i, j = np.indices(glcm_norm.shape)
+    mean = glcmMean(glcm_norm)
+    variance = glcmVariance(glcm_norm)
+    c = correlation(glcm_norm)
+    b = np.sum((((i + j - (2 * mean)) ** 4) * glcm_norm)/(4 * (variance ** 2) * ((1 + c) ** 2)))
+    return np.sign(b) * (np.abs(b) ** (1/4))
+
+def glcm_features(glcm_norm):
+    return np.array([contrast(glcm_norm), energy(glcm_norm), homogeneity(glcm_norm), correlation(glcm_norm), entropy(glcm_norm), shade(glcm_norm), prominence(glcm_norm)])
 
 def process_texture_image(filename, folder_path):
     img_path = os.path.join(folder_path, filename)
