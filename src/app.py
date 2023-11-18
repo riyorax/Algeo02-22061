@@ -8,6 +8,7 @@ from function import CBIR_Texture as CT
 import time
 from flask import Response
 from fpdf import FPDF
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -116,65 +117,58 @@ def result(page=1):
 
 # Download PDF
 
+def get_image_dimensions(image_path):
+    with Image.open(image_path) as img:
+        width, height = img.size
+    return width, height
 
 @app.route('/download_pdf', methods=['POST'])
+
 def download_pdf():
     with open('src/data/similarity.json', 'r') as file:
         similarity_data = json.load(file)
 
-    # Sort the data based on similarity (you may need to adjust this depending on your data structure)
     sorted_data = sorted(similarity_data, key=lambda x: x['similarity'], reverse=True)
+    top_3_data = sorted_data[:3]
 
-    # Take the top 6 images
-    top_6_data = sorted_data[:6]
-
-    # Create a PDF document
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
-
-    # Set font for the PDF
     pdf.set_font("Arial", size=12)
 
-    # Add the single file image to the PDF
     single_file_name = get_single_file_name('src/static/single_uploads')
     single_image_path = f'src/static/single_uploads/{single_file_name}'
+    
+    img_width, img_height = get_image_dimensions(single_image_path)
 
-    # Center the single file image
-    pdf.image(single_image_path, x=pdf.w / 2 - 40, y=pdf.get_y(), w=80)  # Adjust 'w' parameter if needed
+    pdf.ln(5)
+    if img_width > img_height:  
+        pdf.image(f'src/static/single_uploads/{single_file_name}', x=pdf.w / 2 - 25 , y=None, w=50)
+    else:  
+        pdf.image(f'src/static/single_uploads/{single_file_name}', x=pdf.w / 2 - 15 , y=None, h=50) 
+    pdf.cell(0, 10, "Compared Image", ln=True, align='C')
+    pdf.ln(5)
 
-    # Move to the next line after the single file image
-    pdf.ln(65)
+    pdf.set_font("Arial", size=12)
 
-    # Set image size and margin for the top 6 images
-    image_size = 40  # Adjust the image size as needed
-    margin = 5  # Adjust the margin as needed
+    for i, data in enumerate(top_3_data): 
 
-    # Add the top 6 images and similarity information
-    for i in range(0, len(top_6_data), 2):
-        for j in range(2):
-            if i + j < len(top_6_data):
-                image_path = f'src/static/multiple_uploads/{top_6_data[i + j]["path"]}'
-                
-                # Center the image with additional margin between columns
-                x_position = pdf.w / 4 - image_size / 2 + j * (pdf.w / 2) + j * (margin)
-                
-                pdf.image(image_path, x=x_position, y=pdf.get_y(), w=image_size)
+        if img_width > img_height:  
+            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=pdf.w / 2 - 25 , y=None, w=50)
+        else:  
+            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=pdf.w / 2 - 15 , y=None, h=50) 
 
-                # Add similarity information below the image
-                similarity_text = f"Similarity: {top_6_data[i + j]['similarity']}"
-                pdf.ln(5)  # Move down a bit
-                pdf.cell(0, 10, similarity_text, ln=True, align='C')  # Center the text
+        similarity_text = f"Similarity: {data['similarity']}"
+        pdf.cell(0, 10, similarity_text, ln=True, align='C') 
+        pdf.ln(5) 
 
-        # Move to the next line after each pair of images
-        pdf.ln(image_size + margin + 15)  # Add extra spacing between pairs
-
-    # Output the PDF content
     response = Response(pdf.output(dest='S').encode('latin1'))
     response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=top_6_images.pdf'
+    response.headers['Content-Disposition'] = 'attachment; algeolens.pdf'
 
     return response
+
+
 
 
 
