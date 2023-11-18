@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="../static/result_style.css">
 </head>
 <body>
+    <div id="loading" style="display: none">
+        <img src="../static/assets/kuru2.gif" alt="Loading">
+        <span>Loading<span class="dots"></span></span>
+    </div>
     <div class="title">
         <h1>ALGEO LENS</h1>
     </div>
@@ -19,10 +23,10 @@
         <div class="left">
             <div class="item-box">
                 <div class="item-image">
-                    <img src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
+                    <img id="uploadPreview" src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
                     <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
-                        <h3>Reupload Image</h3>
-                        <input type="file" name="single_file" id="single_file">
+                        <h3>Upload Image</h3>
+                        <input type="file" name="single_file" id="single_file" onchange="previewImage()">
                         <br>
                         <h3>Reupload Dataset</h3>
                         <input type="file" name="multiple_files" id="multiple_files" multiple>
@@ -69,15 +73,30 @@
                     <a href="{{ url_for('result', page=total_pages) }}">>></a>
                 {% endif %}
             </div>
-            
         </div>
-        
-        
-        
     </div>
-    <script src="../static/script.js"></script>
+    <script>
+        function previewImage() {
+            var preview = document.getElementById('uploadPreview');
+            var file    = document.getElementById('single_file').files[0];
+            var reader  = new FileReader();
+
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "src/assets/static/placeholder.png";
+            }
+        }
+        function checkUploadAndRedirect() {
+        var singleFileInput = document.getElementById('single_file');
+        var multipleFilesInput = document.getElementById('multiple_files');
+        document.getElementById('loading').style.display = 'flex';
+        return true;
+    }
+    </script>
 </body>
 </html>
-
-
-

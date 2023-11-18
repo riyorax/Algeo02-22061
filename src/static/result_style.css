@@ -96,7 +96,6 @@ body {
     align-items: center;
 }
 
-
 input[type="file"] {
     margin-bottom: 10px;
 }
@@ -114,4 +113,49 @@ input[type="submit"] {
 
 .input[type="submit"]:hover {
     background-color: #45a049;
+
+#loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+    text-align: center;
+}
+
+#loading img {
+    max-width: 250px; 
+    max-height: 250px; 
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+#loading span {
+    color: #000;
+    font-size: 1.5em;
+}
+
+#loading .dots::after {
+    content: '';
+    display: inline-block;
+    animation: dots 1.5s steps(5, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: '.';
+    }
+    40%, 60% {
+        content: '..';
+    }
+    80%, 100% {
+        content: '...';
+    }
 }

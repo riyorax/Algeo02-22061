@@ -47,8 +47,8 @@
             var singleFileInput = document.getElementById('single_file');
             var multipleFilesInput = document.getElementById('multiple_files');
 
-            if (!singleFileInput.files.length && !multipleFilesInput.files.length) {
-                alert("Please insert an image and/or dataset!");
+            if (!singleFileInput.files.length || !multipleFilesInput.files.length) {
+                alert("Please insert an image and dataset!");
                 return false;
             }
             document.getElementById('loading').style.display = 'flex';
