@@ -8,7 +8,7 @@ body {
     background-color: #f4f4f4;
     display: flex;
     justify-content: center; 
-    height: 620px;
+    height: 100vh;
 }
 
 .title {
