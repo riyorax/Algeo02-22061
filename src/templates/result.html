@@ -21,13 +21,16 @@
                 <div class="item-image">
                     <img src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
                     <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
-                        <h3>Upload Image</h3>
+                        <h3>Reupload Image</h3>
                         <input type="file" name="single_file" id="single_file">
                         <br>
-                        <h3>Upload Dataset</h3>
+                        <h3>Reupload Dataset</h3>
                         <input type="file" name="multiple_files" id="multiple_files" multiple>
                         <br>
                         <input type="submit" value="Search">
+                    </form>
+                    <form action="{{ url_for('download_pdf') }}" method="POST">
+                        <input type="submit" value="Download PDF">
                     </form>
                 </div>
             </div>
@@ -49,7 +52,7 @@
                 {% set end_page = current_page + 3 if current_page + 3 <= total_pages else total_pages + 1 %}
                 
                 {% if start_page > 1 %}
-                    <a href="{{ url_for('result', page=1) }}">1</a>
+                    <a href="{{ url_for('result', page=1) }}"><<</a>
                     {% if start_page > 2 %}
                         <span>...</span>
                     {% endif %}
@@ -63,9 +66,10 @@
                     {% if end_page < total_pages %}
                         <span>...</span>
                     {% endif %}
-                    <a href="{{ url_for('result', page=total_pages) }}">{{ total_pages }}</a>
+                    <a href="{{ url_for('result', page=total_pages) }}">>></a>
                 {% endif %}
             </div>
+            
         </div>
         
         

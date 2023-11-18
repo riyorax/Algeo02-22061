@@ -6,6 +6,8 @@ import json
 from function import CBIR_Colour as CC
 from function import CBIR_Texture as CT
 import time
+from flask import Response
+from fpdf import FPDF
 
 app = Flask(__name__)
 
@@ -109,6 +111,73 @@ def result(page=1):
     single_file_name = get_single_file_name('src/static/single_uploads')
     return render_template('result.html', data=current_page_data, current_page=page, total_pages=total_pages, single_file_name=single_file_name, runtime = runtime, total_images=total_images)
 
+# Download PDF
+
+
+@app.route('/download_pdf', methods=['POST'])
+def download_pdf():
+    with open('src/data/similarity.json', 'r') as file:
+        similarity_data = json.load(file)
+
+    # Sort the data based on similarity (you may need to adjust this depending on your data structure)
+    sorted_data = sorted(similarity_data, key=lambda x: x['similarity'], reverse=True)
+
+    # Take the top 6 images
+    top_6_data = sorted_data[:6]
+
+    # Create a PDF document
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+
+    # Set font for the PDF
+    pdf.set_font("Arial", size=12)
+
+    # Add the single file image to the PDF
+    single_file_name = get_single_file_name('src/static/single_uploads')
+    single_image_path = f'src/static/single_uploads/{single_file_name}'
+
+    # Center the single file image
+    pdf.image(single_image_path, x=pdf.w / 2 - 40, y=pdf.get_y(), w=80)  # Adjust 'w' parameter if needed
+
+    # Move to the next line after the single file image
+    pdf.ln(65)
+
+    # Set image size and margin for the top 6 images
+    image_size = 40  # Adjust the image size as needed
+    margin = 5  # Adjust the margin as needed
+
+    # Add the top 6 images and similarity information
+    for i in range(0, len(top_6_data), 2):
+        for j in range(2):
+            if i + j < len(top_6_data):
+                image_path = f'src/static/multiple_uploads/{top_6_data[i + j]["path"]}'
+                
+                # Center the image with additional margin between columns
+                x_position = pdf.w / 4 - image_size / 2 + j * (pdf.w / 2) + j * (margin)
+                
+                pdf.image(image_path, x=x_position, y=pdf.get_y(), w=image_size)
+
+                # Add similarity information below the image
+                similarity_text = f"Similarity: {top_6_data[i + j]['similarity']}"
+                pdf.ln(5)  # Move down a bit
+                pdf.cell(0, 10, similarity_text, ln=True, align='C')  # Center the text
+
+        # Move to the next line after each pair of images
+        pdf.ln(image_size + margin + 15)  # Add extra spacing between pairs
+
+    # Output the PDF content
+    response = Response(pdf.output(dest='S').encode('latin1'))
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=top_6_images.pdf'
+
+    return response
+
+
+
+
+
+
 @app.route('/src/uploads/multiple_uploads/<path:filename>')
 def serve_image(filename):
     return send_from_directory('src/uploads/multiple_uploads', filename)
@@ -127,10 +196,3 @@ def searchengineconcept():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# from function import CBIR_Colour as CC
-
-# if __name__ == '__main__':
-#     CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colourSimilarity.json')
-
-# print(get_single_file_name('src/static/single_uploads'))
