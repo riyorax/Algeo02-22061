@@ -142,28 +142,32 @@ def download_pdf():
 
     single_file_name = get_single_file_name('src/static/single_uploads')
     single_image_path = f'src/static/single_uploads/{single_file_name}'
-    
     img_width, img_height = get_image_dimensions(single_image_path)
 
     pdf.ln(5)
-    if img_width > img_height:  
-        pdf.image(f'src/static/single_uploads/{single_file_name}', x=pdf.w / 2 - 25 , y=None, w=50)
-    else:  
-        pdf.image(f'src/static/single_uploads/{single_file_name}', x=pdf.w / 2 - 15 , y=None, h=50) 
-    pdf.cell(0, 10, "Compared Image", ln=True, align='C')
+    pdf.set_font("Arial", 'B', size=16)
+    pdf.cell(0, 14, "ALGEO LENS", ln=True, align='C')
     pdf.ln(5)
 
+    if img_width > img_height:  
+        pdf.image(f'src/static/single_uploads/{single_file_name}', x=10 , y=None, w=50)
+    else:  
+        pdf.image(f'src/static/single_uploads/{single_file_name}', x=10 , y=None, h=50)
+
     pdf.set_font("Arial", size=12)
+    pdf.cell(0, 10, "Compared Image", ln=True, align='L')
+    pdf.ln(5)
+
 
     for i, data in enumerate(top_3_data): 
 
         if img_width > img_height:  
-            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=pdf.w / 2 - 25 , y=None, w=50)
+            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=10 , y=None, w=50)
         else:  
-            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=pdf.w / 2 - 15 , y=None, h=50) 
+            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=10 , y=None, h=50) 
 
         similarity_text = f"Similarity: {data['similarity']}"
-        pdf.cell(0, 10, similarity_text, ln=True, align='C') 
+        pdf.cell(0, 10, similarity_text, ln=True, align='L') 
         pdf.ln(5) 
 
     response = Response(pdf.output(dest='S').encode('latin1'))
