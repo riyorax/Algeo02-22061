@@ -24,11 +24,20 @@
             <div class="item-box">
                 <div class="item-image">
                     <img id="uploadPreview" src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
+                    
                     <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
+                        <div class="side-div-top">
+                            <span class="left-text">Colour</span>
+                            <label class="toggle-container">
+                                <input type="checkbox" class="toggle-input" name="toggleSwitch">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="right-text">Texture</span>
+                        </div>
                         <h3>Upload Image</h3>
-                        <input type="file" name="single_file" id="single_file" onchange="previewImage()">
+                        <input type="file" name="single_file" id="single_file">
                         <br>
-                        <h3>Reupload Dataset</h3>
+                        <h3>Upload Dataset</h3>
                         <input type="file" name="multiple_files" id="multiple_files" multiple>
                         <br>
                         <input type="submit" value="Search">
