@@ -16,41 +16,53 @@
         <a href="/searchengineconcept.html" class="menu-item">Search Engine Concept</a>
     </div>
     <div class="main-container">
-        <div class="item-box">
-            <div class="item-image">
-                <img src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
-                <p>"Test single image"</p>
+        <div class="left">
+            <div class="item-box">
+                <div class="item-image">
+                    <img src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
+                    <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
+                        <h3>Upload Image</h3>
+                        <input type="file" name="single_file" id="single_file">
+                        <br>
+                        <h3>Upload Dataset</h3>
+                        <input type="file" name="multiple_files" id="multiple_files" multiple>
+                        <br>
+                        <input type="submit" value="Search">
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="item-box">
-            {% for item in data %}
-            <div class="item-image">
-                <img src="/static/multiple_uploads/{{ item.path }}" alt="Image {{ item.path }}" max-height="200px", max-width = "200px">
-                <p>"{{ item.similarity }}"</p>
+        <div class="right">
+            <div class="item-box">
+                {% for item in data %}
+                <div class="item-image">
+                    <img src="/static/multiple_uploads/{{ item.path }}" alt="Image {{ item.path }}" max-height="200px", max-width = "200px">
+                    <p>"{{ item.similarity }}"</p>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        <div class="pagination">
-            {% set start_page = current_page - 2 if current_page > 2 else 1 %}
-            {% set end_page = current_page + 3 if current_page + 3 <= total_pages else total_pages + 1 %}
-            
-            {% if start_page > 1 %}
-                <a href="{{ url_for('result', page=1) }}"><<</a>
-                {% if start_page > 2 %}
-                    <span>...</span>
+            <div class="pagination">
+                {% set start_page = current_page - 2 if current_page > 2 else 1 %}
+                {% set end_page = current_page + 3 if current_page + 3 <= total_pages else total_pages + 1 %}
+                
+                {% if start_page > 1 %}
+                    <a href="{{ url_for('result', page=1) }}">1</a>
+                    {% if start_page > 2 %}
+                        <span>...</span>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-            
-            {% for page_num in range(start_page, end_page) %}
-                <a href="{{ url_for('result', page=page_num) }}" {% if page_num == current_page %}class="active"{% endif %}>{{ page_num }}</a>
-            {% endfor %}
-            
-            {% if end_page <= total_pages %}
-                {% if end_page < total_pages %}
-                    <span>...</span>
+                
+                {% for page_num in range(start_page, end_page) %}
+                    <a href="{{ url_for('result', page=page_num) }}" {% if page_num == current_page %}class="active"{% endif %}>{{ page_num }}</a>
+                {% endfor %}
+                
+                {% if end_page <= total_pages %}
+                    {% if end_page < total_pages %}
+                        <span>...</span>
+                    {% endif %}
+                    <a href="{{ url_for('result', page=total_pages) }}">{{ total_pages }}</a>
                 {% endif %}
-                <a href="{{ url_for('result', page=total_pages) }}">>></a>
-            {% endif %}
+            </div>
         </div>
         
         

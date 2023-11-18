@@ -21,15 +21,15 @@
     </div>
     <div class="main-container">
         <div class="box">
+            <div class="side-div-top">
+                <span class="left-text">Colour</span>
+                <label class="toggle-container">
+                    <input type="checkbox" class="toggle-input">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="right-text">Texture</span>
+            </div>
             <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
-                <div class="side-div-top">
-                    <span class="left-text">Colour</span>
-                    <label class="toggle-container">
-                        <input type="checkbox" class="toggle-input" name="toggleSwitch">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <span class="right-text">Texture</span>
-                </div>
                 <h3>Upload Image</h3>
                 <input type="file" name="single_file" id="single_file">
                 <br>

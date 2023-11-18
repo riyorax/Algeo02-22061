@@ -1,14 +1,42 @@
 [
     {
-        "path": "Screenshot_2023-10-04_214123_-_Copy.png",
-        "similarity": 0.8206814983015555
-    },
-    {
         "path": "Screenshot_2023-10-04_214027.png",
-        "similarity": 0.8020153516045494
+        "similarity": 1.0
     },
     {
         "path": "Screenshot_2023-10-04_214027_-_Copy.png",
+        "similarity": 1.0
+    },
+    {
+        "path": "Screenshot_2023-10-04_214538.png",
+        "similarity": 0.9853091175536765
+    },
+    {
+        "path": "Screenshot_2023-10-04_214538_-_Copy.png",
+        "similarity": 0.9853091175536765
+    },
+    {
+        "path": "Screenshot_2023-10-04_214123.png",
+        "similarity": 0.9833912772304328
+    },
+    {
+        "path": "Screenshot_2023-10-04_214123_-_Copy.png",
+        "similarity": 0.9833912772304328
+    },
+    {
+        "path": "Screenshot_2023-10-04_214256.png",
+        "similarity": 0.8462901626527084
+    },
+    {
+        "path": "Screenshot_2023-10-04_214256_-_Copy.png",
+        "similarity": 0.8462901626527084
+    },
+    {
+        "path": "Screenshot_2023-09-29_222355.png",
+        "similarity": 0.8020153516045494
+    },
+    {
+        "path": "Screenshot_2023-09-29_222355_-_Copy.png",
         "similarity": 0.8020153516045494
     }
 ]
