@@ -8,10 +8,17 @@ from function import CBIR_Texture as CT
 
 app = Flask(__name__)
 
+def get_single_file_name(folder_path):
+    files = os.listdir(folder_path)
+    if files:
+        return files[0]
+    else:
+        return None
+
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
-SINGLE_UPLOAD_FOLDER = '/static/single_uploads'
-MULTIPLE_UPLOAD_FOLDER = '/static/multiple_uploads'
+SINGLE_UPLOAD_FOLDER = 'src/static/single_uploads'
+MULTIPLE_UPLOAD_FOLDER = 'src/static/multiple_uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 
 app.config['SINGLE_UPLOAD_FOLDER'] = SINGLE_UPLOAD_FOLDER
@@ -39,11 +46,11 @@ def empty_folder(folder_path):
 @app.route('/', methods=['POST'])
 def upload_files():
 
-    empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
-    empty_folder(app.config['MULTIPLE_UPLOAD_FOLDER'])
-
     os.makedirs(app.config['SINGLE_UPLOAD_FOLDER'], exist_ok=True)
     os.makedirs(app.config['MULTIPLE_UPLOAD_FOLDER'], exist_ok=True)
+
+    empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
+    empty_folder(app.config['MULTIPLE_UPLOAD_FOLDER'])
 
     single_file = request.files.get('single_file')
     if single_file and allowed_file(single_file.filename):
@@ -56,27 +63,26 @@ def upload_files():
             multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
             file.save(multiple_filename)
 
-    if 'multiple_files' in request.files:
-        CC.DatasetToColourJSON('src/uploads/multiple_uploads', 'src/data/colourSimilarity.json')
+    if 'single_file' in request.files:
+        CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
+        single_file_name = get_single_file_name('src/static/single_uploads')
+        single_file_name = 'src/static/single_uploads/' + single_file_name 
+        CC.SimilarityColour(single_file_name, 'src/data/colour.json','src/data/colourSimilarity.json')
 
-    return redirect(url_for('result'))
+    return redirect(url_for('result',page =1))
 
-def get_single_file_name(folder_path):
-    files = os.listdir(folder_path)
-    if files:
-        return files[0]
-    else:
-        return None
+
 
 # PAGINATION 
 
-with open('data/colourSimilarity.json', 'r') as file:
-    dummy_data = json.load(file)
 
-items_per_page = 10
 
 @app.route('/result/<int:page>')
 def result(page=1):
+    with open('src/data/colourSimilarity.json', 'r') as file:
+        dummy_data = json.load(file)
+
+    items_per_page = 10
     page = int(request.args.get('page', 1))
 
     start_idx = (page - 1) * items_per_page
@@ -86,7 +92,7 @@ def result(page=1):
 
     total_pages = (len(dummy_data) + items_per_page - 1) // items_per_page
 
-    single_file_name = get_single_file_name('static/single_uploads')
+    single_file_name = get_single_file_name('src/static/single_uploads')
     return render_template('result.html', data=current_page_data, current_page=page, total_pages=total_pages, single_file_name=single_file_name)
 
 @app.route('/src/uploads/multiple_uploads/<path:filename>')
@@ -107,3 +113,10 @@ def searchengineconcept():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# from function import CBIR_Colour as CC
+
+# if __name__ == '__main__':
+#     CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colourSimilarity.json')
+
+# print(get_single_file_name('src/static/single_uploads'))
