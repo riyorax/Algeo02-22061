@@ -6,7 +6,7 @@ body {
 .main-container {
     align-items: center;
     display: flex;
-    flex-direction: column; 
+    flex-direction: row; 
     background-color: #f4f4f4;
     padding: 40px;
 }
@@ -78,5 +78,20 @@ body {
     height: 200px;
 }
 
+.left {
+    flex: 1;
+}
 
+.runtime {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
 
+.right {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+}

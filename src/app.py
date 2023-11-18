@@ -5,6 +5,7 @@ import shutil
 import json
 from function import CBIR_Colour as CC
 from function import CBIR_Texture as CT
+import time
 
 app = Flask(__name__)
 
@@ -64,7 +65,7 @@ def upload_files():
         if file and allowed_file(file.filename):
             multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
             file.save(multiple_filename)
-
+    stime = time.time()
     if toggle_state == 'off':
         if 'single_file' in request.files:
             CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
@@ -76,9 +77,11 @@ def upload_files():
             CT.DatasetToTextureJSON('src/static/multiple_uploads', 'src/data/texture.json')
             single_file_name = get_single_file_name('src/static/single_uploads')
             single_file_name = 'src/static/single_uploads/' + single_file_name 
-            CT.SimilarityTexture(single_file_name, 'src/data/colour.json','src/data/similarity.json')
+            CT.SimilarityTexture(single_file_name, 'src/data/texture.json','src/data/similarity.json')
+    ftime = time.time()
+    runtime = round(ftime - stime, 2)
 
-    return redirect(url_for('result',page =1))
+    return redirect(url_for('result',page =1, runtime = runtime))
 
 
 
@@ -88,10 +91,11 @@ def upload_files():
 
 @app.route('/result/<int:page>', methods=['GET'])
 def result(page=1):
+    runtime = request.args.get('runtime', default=0, type=float)
     with open('src/data/similarity.json', 'r') as file:
         dummy_data = json.load(file)
 
-    items_per_page = 10
+    items_per_page = 6
 
     start_idx = (page - 1) * items_per_page
     end_idx = start_idx + items_per_page
@@ -100,8 +104,10 @@ def result(page=1):
 
     total_pages = (len(dummy_data) + items_per_page - 1) // items_per_page
 
+    total_images = len(dummy_data)
+
     single_file_name = get_single_file_name('src/static/single_uploads')
-    return render_template('result.html', data=current_page_data, current_page=page, total_pages=total_pages, single_file_name=single_file_name)
+    return render_template('result.html', data=current_page_data, current_page=page, total_pages=total_pages, single_file_name=single_file_name, runtime = runtime, total_images=total_images)
 
 @app.route('/src/uploads/multiple_uploads/<path:filename>')
 def serve_image(filename):
