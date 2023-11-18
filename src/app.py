@@ -11,6 +11,8 @@ from fpdf import FPDF
 
 app = Flask(__name__)
 
+global runtimer
+
 def get_single_file_name(folder_path):
     files = os.listdir(folder_path)
     if files:
@@ -89,6 +91,8 @@ def upload_files():
             CT.SimilarityTexture(single_file_name, 'src/data/texture.json', 'src/data/similarity.json')
     ftime = time.time()
     runtime = round(ftime - stime, 2)
+    global runtimer
+    runtimer = runtime
 
     return redirect(url_for('result',page =1, runtime = runtime))
 
@@ -96,7 +100,7 @@ def upload_files():
 
 @app.route('/result/<int:page>', methods=['GET'])
 def result(page=1):
-    runtime = request.args.get('runtime', default=0, type=float)
+    runtime = request.args.get('runtime', default=runtimer, type=float)
     with open('src/data/similarity.json', 'r') as file:
         dummy_data = json.load(file)
 
