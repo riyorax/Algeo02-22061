@@ -34,16 +34,18 @@ This is the vector algebra implementation of reverse image search tool. The vect
 - opencv-python (4.8.1.78)
 - numpy (1.26.1)
 - pillow (10.1.0)
+- fpdf (1.7.2)
 
 
 ## Features
 Reverse Image Search with:
 - CBIR with color parameter
 - CBIR with texture parameter
+- Export results in PDF
 
 
 ## Screenshots
-![Screenshot 1](./img/placeholder.png)
+![Web Frontpage](./img/WebScreenshot.jpeg)
 
 
 ## Setup
@@ -51,8 +53,7 @@ Reverse Image Search with:
 Needs Python (py) in order to run. Python can be found at [their website](https://www.python.org/downloads/). It also needs numpy library, bla bla, and bla bla that are listed in the requirements file. The requirements.txt file is located at the src folder. To automatically installed all of the modules required, simply copy and paste these lines into your terminal.
 
 ```shell
-cd ./src
-pip install -r requirements.txt
+pip install -r src/requirements.txt
 ```
 
 I know when using pip, it’s good practice to use a virtual environment, but I don't care right now. So, happy developing :D
@@ -63,11 +64,12 @@ I know when using pip, it’s good practice to use a virtual environment, but I 
 There are no additional steps for the developer to build the project after some code changes, just save it, then run it.
 
 ```shell
-cd ./src
-python main.py
+python src/app.py
 ```
+Then python will host the website locally like the following image:
 
-Here, python just runs the code locally. If you want to use the web version, it's coming soon.
+![Running on](./img/Runningon.png)
+Here, the website is hosted locally, press <kbd>Ctrl</kbd> + <kbd>click</kbd> on the  <em>http://127.0.0.1:5000</em>
 
 
 ## Project Status
@@ -77,11 +79,10 @@ Project is: _in progress_.
 ## Room for Improvement
 
 Room for improvement:
-- None currently
+- Impove the UI/UX
 
 To do:
-- CBIR with color parameter
-- CBIR with texture parameter
+- Improve Website's FrontEnd and BackEnd
 
 
 ## Acknowledgements
