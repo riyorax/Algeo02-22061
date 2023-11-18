@@ -52,42 +52,45 @@ def upload_files():
     os.makedirs(app.config['SINGLE_UPLOAD_FOLDER'], exist_ok=True)
     os.makedirs(app.config['MULTIPLE_UPLOAD_FOLDER'], exist_ok=True)
 
-    empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
-    empty_folder(app.config['MULTIPLE_UPLOAD_FOLDER'])
-
     single_file = request.files.get('single_file')
-    if single_file and allowed_file(single_file.filename):
+    new_image = single_file and single_file.filename != ''
+
+    if new_image:
+        empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
+    if new_image:
+        empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
         single_filename = os.path.join(app.config['SINGLE_UPLOAD_FOLDER'], secure_filename(single_file.filename))
         single_file.save(single_filename)
+    else:
+        single_file_name = get_single_file_name('src/static/single_uploads')
 
     multiple_files = request.files.getlist('multiple_files')
-    for file in multiple_files:
-        if file and allowed_file(file.filename):
-            multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
-            file.save(multiple_filename)
+    new_dataset = multiple_files and multiple_files[0].filename != ''
+    if new_dataset:
+        empty_folder(app.config['MULTIPLE_UPLOAD_FOLDER'])
+        for file in multiple_files:
+            if file and allowed_file(file.filename):
+                multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
+                file.save(multiple_filename)
+
     stime = time.time()
-    if toggle_state == 'off':
-        if 'single_file' in request.files:
-            CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
-            single_file_name = get_single_file_name('src/static/single_uploads')
-            single_file_name = 'src/static/single_uploads/' + single_file_name 
-            CC.SimilarityColour(single_file_name, 'src/data/colour.json','src/data/similarity.json')
-    else:
-        if 'single_file' in request.files:
-            CT.DatasetToTextureJSON('src/static/multiple_uploads', 'src/data/texture.json')
-            single_file_name = get_single_file_name('src/static/single_uploads')
-            single_file_name = 'src/static/single_uploads/' + single_file_name 
-            CT.SimilarityTexture(single_file_name, 'src/data/texture.json','src/data/similarity.json')
+    if 'single_file' in request.files:
+        single_file_name = get_single_file_name('src/static/single_uploads')
+        single_file_name = 'src/static/single_uploads/' + single_file_name 
+        if toggle_state == 'off':
+            if new_dataset:
+                CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
+            CC.SimilarityColour(single_file_name, 'src/data/colour.json', 'src/data/similarity.json')
+        else:
+            if new_dataset:
+                CT.DatasetToTextureJSON('src/static/multiple_uploads', 'src/data/texture.json')
+            CT.SimilarityTexture(single_file_name, 'src/data/texture.json', 'src/data/similarity.json')
     ftime = time.time()
     runtime = round(ftime - stime, 2)
 
     return redirect(url_for('result',page =1, runtime = runtime))
 
-
-
 # PAGINATION 
-
-
 
 @app.route('/result/<int:page>', methods=['GET'])
 def result(page=1):
@@ -127,10 +130,3 @@ def searchengineconcept():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# from function import CBIR_Colour as CC
-
-# if __name__ == '__main__':
-#     CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colourSimilarity.json')
-
-# print(get_single_file_name('src/static/single_uploads'))
