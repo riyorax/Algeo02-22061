@@ -1,14 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import os
 from werkzeug.utils import secure_filename
 import shutil
+import json
 from function import CBIR_Colour as CC
 from function import CBIR_Texture as CT
 
 app = Flask(__name__)
 
-SINGLE_UPLOAD_FOLDER = 'src/uploads/single_uploads'
-MULTIPLE_UPLOAD_FOLDER = 'src/uploads/multiple_uploads'
+app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+
+SINGLE_UPLOAD_FOLDER = '/static/single_uploads'
+MULTIPLE_UPLOAD_FOLDER = '/static/multiple_uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 
 app.config['SINGLE_UPLOAD_FOLDER'] = SINGLE_UPLOAD_FOLDER
@@ -52,17 +55,43 @@ def upload_files():
         if file and allowed_file(file.filename):
             multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
             file.save(multiple_filename)
-    
-    if 'multiple_files' in request.files:
-        CC.DatasetToColourJSON('src/uploads/multiple_uploads', 'src/data/colour.json')
 
-        CT.DatasetToTextureJSON('src/uploads/multiple_uploads', 'src/data/texture.json')
+    if 'multiple_files' in request.files:
+        CC.DatasetToColourJSON('src/uploads/multiple_uploads', 'src/data/colourSimilarity.json')
 
     return redirect(url_for('result'))
 
-@app.route("/result.html")
-def result():
-    return render_template('result.html')
+def get_single_file_name(folder_path):
+    files = os.listdir(folder_path)
+    if files:
+        return files[0]
+    else:
+        return None
+
+# PAGINATION 
+
+with open('data/colourSimilarity.json', 'r') as file:
+    dummy_data = json.load(file)
+
+items_per_page = 10
+
+@app.route('/result/<int:page>')
+def result(page=1):
+    page = int(request.args.get('page', 1))
+
+    start_idx = (page - 1) * items_per_page
+    end_idx = start_idx + items_per_page
+
+    current_page_data = dummy_data[start_idx:end_idx]
+
+    total_pages = (len(dummy_data) + items_per_page - 1) // items_per_page
+
+    single_file_name = get_single_file_name('static/single_uploads')
+    return render_template('result.html', data=current_page_data, current_page=page, total_pages=total_pages, single_file_name=single_file_name)
+
+@app.route('/src/uploads/multiple_uploads/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('src/uploads/multiple_uploads', filename)
 
 @app.route('/aboutus.html')
 def about_us():

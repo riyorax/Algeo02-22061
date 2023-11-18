@@ -3,33 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Pagination</title>
+    <title>Algeo02-22061</title>
     <link rel="stylesheet" href="../static/result_style.css">
 </head>
 <body>
     <div class="title">
         <h1>ALGEO LENS</h1>
     </div>
+    <div class="menu-bar">
+        <a href="/aboutus.html" class="menu-item">About Us</a>
+        <a href="/howtouse.html" class="menu-item">How to Use</a>
+        <a href="/searchengineconcept.html" class="menu-item">Search Engine Concept</a>
+    </div>
     <div class="main-container">
-        <div class="gallery">
-            <div class="container">
-                <div id="image-container"></div>
-                <div class="pagination">
-                    <div class="prev" onclick="changePage(-1)">Prev</div>
-                    <div class="page">Page <span id="page-num"></span></div>
-                    <div class="next" onclick="changePage(1)">Next</div>
-                </div>
-                <div>
-                    <label for="page-select">Select Page:</label>
-                    <select id="page-select" onchange="changePageDropdown(this)">
-                    </select>
-                </div>
+        <div class="item-box">
+            <div class="item-image">
+                <img src="/static/single_uploads/{{ single_file_name }}" alt="Image" height="200px">
+                <p>"Test single image"</p>
             </div>
         </div>
-        <!-- <div class="button">
-            <button class="download-button" onclick="downloadData()">Download</button>
-        </div> -->
+        <div class="item-box">
+            {% for item in data %}
+            <div class="item-image">
+                <img src="/static/multiple_uploads/{{ item.path }}" alt="Image {{ item.path }}" height="200px">
+                <p>"{{ item.similarity }}"</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="pagination">
+            {% for page_num in range(1, total_pages + 1) %}
+                <a href="{{ url_for('result', page=page_num) }}" {% if page_num == current_page %}class="active"{% endif %}>{{ page_num }}</a>
+            {% endfor %}
+        </div>
     </div>
-    <script src="../static/pagination_script.js"></script>
+    <script src="../static/script.js"></script>
 </body>
 </html>
+
+
+
