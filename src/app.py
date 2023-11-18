@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 import os
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename 
 import shutil
 import json
 from function import CBIR_Colour as CC
@@ -9,10 +9,20 @@ import time
 from flask import Response
 from fpdf import FPDF
 from PIL import Image
+import zipfile
+import tempfile
+from multiprocessing import Pool
+from decimal import Decimal, ROUND_DOWN
 
 app = Flask(__name__)
 
 global runtimer
+global processedTexture
+global processedColour
+global functionUsed
+
+processedTexture = False
+processedColour = False
 
 def get_single_file_name(folder_path):
     files = os.listdir(folder_path)
@@ -20,15 +30,21 @@ def get_single_file_name(folder_path):
         return files[0]
     else:
         return None
+    
+def is_dataset_empty(dataset_path):
+    for _, _, files in os.walk(dataset_path):
+        if files:
+            return False
+    return True
 
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
-SINGLE_UPLOAD_FOLDER = 'src/static/single_uploads'
-MULTIPLE_UPLOAD_FOLDER = 'src/static/multiple_uploads'
+IMAGE_UPLOAD_FOLDER = 'src/static/image_upload'
+DATASET_FOLDER = 'src/static/dataset'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 
-app.config['SINGLE_UPLOAD_FOLDER'] = SINGLE_UPLOAD_FOLDER
-app.config['MULTIPLE_UPLOAD_FOLDER'] = MULTIPLE_UPLOAD_FOLDER
+app.config['IMAGE_UPLOAD_FOLDER'] = IMAGE_UPLOAD_FOLDER
+app.config['DATASET_FOLDER'] = DATASET_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -49,52 +65,146 @@ def empty_folder(folder_path):
             except Exception as e:
                 print('Failed to delete %s. Reason: %s' % (file_path, e))
 
+def extract_file(args):
+    zip_path, member, extract_path = args
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        source = zip_ref.open(member)
+        target_file_path = os.path.join(extract_path, os.path.basename(member.filename))
+        with open(target_file_path, "wb") as target:
+            shutil.copyfileobj(source, target)
+        source.close()
+
+@app.route('/upload_dataset', methods=['POST'])
+def upload_dataset():
+    global processedColour
+    global processedTexture
+
+    zip_file = request.files.get('zip_file')
+    if zip_file:
+        temp_file = tempfile.NamedTemporaryFile(delete=False)
+        zip_filename = secure_filename(zip_file.filename)
+        temp_file_path = temp_file.name
+        zip_file.save(temp_file_path)
+        temp_file.close()
+
+        extract_path = 'src/static/dataset'
+
+        if os.path.exists(extract_path):
+            shutil.rmtree(extract_path)
+        os.makedirs(extract_path, exist_ok=True)
+
+        with zipfile.ZipFile(temp_file_path, 'r') as zip_ref:
+            members = [m for m in zip_ref.infolist() if not m.is_dir()]
+            args = [(temp_file_path, member, extract_path) for member in members]
+
+        with Pool() as pool:
+            pool.map(extract_file, args)
+
+        os.remove(temp_file_path)
+
+        
+
+        processedTexture = False
+        processedColour = False
+
+        return 'Dataset uploaded and extracted successfully'
+
+    return 'No file uploaded'
+
+# @app.route('/', methods=['POST'])
+# def upload_files():
+
+#     toggle_state = 'on' if 'toggleSwitch' in request.form else 'off'
+
+#     os.makedirs(app.config['SINGLE_UPLOAD_FOLDER'], exist_ok=True)
+#     os.makedirs(app.config['MULTIPLE_UPLOAD_FOLDER'], exist_ok=True)
+
+#     single_file = request.files.get('single_file')
+#     new_image = single_file and single_file.filename != ''
+
+#     if new_image:
+#         empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
+#     if new_image:
+#         empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
+#         single_filename = os.path.join(app.config['SINGLE_UPLOAD_FOLDER'], secure_filename(single_file.filename))
+#         single_file.save(single_filename)
+#     else:
+#         single_file_name = get_single_file_name('src/static/single_uploads')
+
+#     multiple_files = request.files.getlist('multiple_files')
+#     new_dataset = multiple_files and multiple_files[0].filename != ''
+#     if new_dataset:
+#         empty_folder(app.config['MULTIPLE_UPLOAD_FOLDER'])
+#         for file in multiple_files:
+#             if file and allowed_file(file.filename):
+#                 multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
+#                 file.save(multiple_filename)
+
+#     stime = time.time()
+#     if 'single_file' in request.files:
+#         single_file_name = get_single_file_name('src/static/single_uploads')
+#         single_file_name = 'src/static/single_uploads/' + single_file_name 
+#         if toggle_state == 'off':
+#             if new_dataset:
+#                 CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
+#             CC.SimilarityColour(single_file_name, 'src/data/colour.json', 'src/data/similarity.json')
+#         else:
+#             if new_dataset:
+#                 CT.DatasetToTextureJSON('src/static/multiple_uploads', 'src/data/texture.json')
+#             CT.SimilarityTexture(single_file_name, 'src/data/texture.json', 'src/data/similarity.json')
+#     ftime = time.time()
+#     runtime = round(ftime - stime, 2)
+#     global runtimer
+#     runtimer = runtime
+
+#     return redirect(url_for('result',page =1, runtime = runtime))
+
 @app.route('/', methods=['POST'])
-def upload_files():
+def search():
+    global processedTexture
+    global processedColour
+    global runtimer
+    global functionUsed
 
-    toggle_state = 'on' if 'toggleSwitch' in request.form else 'off'
+    os.makedirs(app.config['IMAGE_UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['DATASET_FOLDER'], exist_ok=True)
 
-    os.makedirs(app.config['SINGLE_UPLOAD_FOLDER'], exist_ok=True)
-    os.makedirs(app.config['MULTIPLE_UPLOAD_FOLDER'], exist_ok=True)
-
-    single_file = request.files.get('single_file')
-    new_image = single_file and single_file.filename != ''
+    uploaded_image = request.files.get('upload_image')
+    new_image = uploaded_image and uploaded_image.filename != ''
 
     if new_image:
-        empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
-    if new_image:
-        empty_folder(app.config['SINGLE_UPLOAD_FOLDER'])
-        single_filename = os.path.join(app.config['SINGLE_UPLOAD_FOLDER'], secure_filename(single_file.filename))
-        single_file.save(single_filename)
+        empty_folder(app.config['IMAGE_UPLOAD_FOLDER'])
+        image_filename = os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], secure_filename(uploaded_image.filename))
+        uploaded_image.save(image_filename)
     else:
-        single_file_name = get_single_file_name('src/static/single_uploads')
-
-    multiple_files = request.files.getlist('multiple_files')
-    new_dataset = multiple_files and multiple_files[0].filename != ''
-    if new_dataset:
-        empty_folder(app.config['MULTIPLE_UPLOAD_FOLDER'])
-        for file in multiple_files:
-            if file and allowed_file(file.filename):
-                multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
-                file.save(multiple_filename)
+        image_filename = get_single_file_name('src/static/image_upload')
 
     stime = time.time()
-    if 'single_file' in request.files:
-        single_file_name = get_single_file_name('src/static/single_uploads')
-        single_file_name = 'src/static/single_uploads/' + single_file_name 
-        if toggle_state == 'off':
-            if new_dataset:
-                CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
-            CC.SimilarityColour(single_file_name, 'src/data/colour.json', 'src/data/similarity.json')
-        else:
-            if new_dataset:
-                CT.DatasetToTextureJSON('src/static/multiple_uploads', 'src/data/texture.json')
-            CT.SimilarityTexture(single_file_name, 'src/data/texture.json', 'src/data/similarity.json')
+    dataset_path = 'src/static/dataset'
+    if is_dataset_empty(dataset_path):
+        return jsonify({'error': 'Please upload a dataset before searching.'}), 400
+    
+    toggle_state = 'on' if 'toggleSwitch' in request.form else 'off'
+
+    img_path = get_single_file_name('src/static/image_upload')
+    print(img_path)
+    img_path = 'src/static/image_upload/' + img_path
+
+    if toggle_state == 'off':
+        functionUsed = "CBIR Colour"
+        if not processedColour:
+            CC.DatasetToColourJSON('src/static/dataset', 'src/data/colour.json')
+            processedColour = True
+        CC.SimilarityColour(img_path, 'src/data/colour.json', 'src/data/similarity.json')
+    else:
+        functionUsed = "CBIR Texture"
+        if not processedTexture:
+            CT.DatasetToTextureJSON('src/static/dataset', 'src/data/texture.json')
+            processedTexture = True
+        CT.SimilarityTexture(img_path, 'src/data/texture.json', 'src/data/similarity.json')
     ftime = time.time()
     runtime = round(ftime - stime, 2)
-    global runtimer
     runtimer = runtime
-
     return redirect(url_for('result',page =1, runtime = runtime))
 
 # PAGINATION 
@@ -104,7 +214,12 @@ def result(page=1):
     runtime = request.args.get('runtime', default=runtimer, type=float)
     with open('src/data/similarity.json', 'r') as file:
         dummy_data = json.load(file)
-
+    
+    for item in dummy_data:
+        similarity = Decimal(str(item['similarity'])) * 100
+        format_percentage = similarity.quantize(Decimal('.01'), rounding=ROUND_DOWN)
+        item['similarity'] = f"{format_percentage}%"
+        
     items_per_page = 6
 
     start_idx = (page - 1) * items_per_page
@@ -116,8 +231,9 @@ def result(page=1):
 
     total_images = len(dummy_data)
 
-    single_file_name = get_single_file_name('src/static/single_uploads')
-    return render_template('result.html', data=current_page_data, current_page=page, total_pages=total_pages, single_file_name=single_file_name, runtime = runtime, total_images=total_images)
+    image_upload = get_single_file_name('src/static/image_upload')
+    global functionUsed
+    return render_template('result.html', data=current_page_data, current_page=page, total_pages=total_pages, single_file_name=image_upload, runtime = runtime, total_images=total_images, functionUsed = functionUsed)
 
 # Download PDF
 
@@ -127,7 +243,6 @@ def get_image_dimensions(image_path):
     return width, height
 
 @app.route('/download_pdf', methods=['POST'])
-
 def download_pdf():
     with open('src/data/similarity.json', 'r') as file:
         similarity_data = json.load(file)
@@ -175,13 +290,6 @@ def download_pdf():
     response.headers['Content-Disposition'] = 'attachment; algeolens.pdf'
 
     return response
-
-
-
-
-
-
-
 
 @app.route('/src/uploads/multiple_uploads/<path:filename>')
 def serve_image(filename):

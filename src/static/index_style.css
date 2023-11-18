@@ -40,10 +40,14 @@ body {
 }
 
 .box {
+    display: flex;
     background-color: #fff; 
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
     border-radius: 10px; 
+    flex-direction: column;  /* Stack children vertically */
+    align-items: center;     /* Center children horizontally */
+    justify-content: center; /* Center children vertically */
 }
 
 .side-div-top {
@@ -201,3 +205,17 @@ input[type="submit"] {
         content: '...';
     }
 }
+
+#uploadPreview {
+    max-height: 200px; 
+    max-width: 200px; 
+    justify-content: center;
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    width: 200px;
+  }

@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../static/index_style.css">
 </head>
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="../static/indexScript.js"></script>
     <div id="loading" style="display: none">
         <img src="static/assets/kuru2.gif" alt="Loading">
         <span>Loading<span class="dots"></span></span>
@@ -21,6 +23,11 @@
     </div>
     <div class="main-container">
         <div class="box">
+
+            <div class="img-container">
+                <img id="uploadPreview" src="{{ url_for('static', filename='assets/placeholder.png') }}" alt="Image">
+            </div>
+
             <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
                 <div class="side-div-top">
                     <span class="left-text">Colour</span>
@@ -31,30 +38,19 @@
                     <span class="right-text">Texture</span>
                 </div>
                 <h3>Upload Image</h3>
-                <input type="file" name="single_file" id="single_file">
-                <br>
-                <h3>Upload Dataset</h3>
-                <input type="file" name="multiple_files" id="multiple_files" multiple>
+                <input type="file" name="upload_image" id="upload_image" onchange="previewImage(this)">
                 <br>
                 <input type="submit" value="Search">
             </form>
+
+            <form id="uploadDatasetForm">
+                <h3>Upload Dataset</h3>
+                <input type="file" name="dataset_files" id="dataset_files" webkitdirectory directory multiple>
+                <br>
+                <input type="button" value="Upload Dataset" onclick="zipAndUploadDataset()">
+            </form>
+
         </div>
     </div>
-    <script>
-        function checkUploadAndRedirect() {
-            var singleFileInput = document.getElementById('single_file');
-            var multipleFilesInput = document.getElementById('multiple_files');
-
-            if (!singleFileInput.files.length || !multipleFilesInput.files.length) {
-                alert("Please insert an image and dataset!");
-                return false;
-            }
-            document.getElementById('loading').style.display = 'flex';
-            return true;
-        }
-        function redirectToResult() {
-            window.location.href = "result.html";
-        }
-    </script>
 </body>
 </html>

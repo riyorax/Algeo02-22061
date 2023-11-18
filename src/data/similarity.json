@@ -1,6 +1,42 @@
 [
     {
-        "path": "7.jpg",
-        "similarity": 0.7620358501115192
+        "path": "961.jpg",
+        "similarity": 1.0
+    },
+    {
+        "path": "964.jpg",
+        "similarity": 0.9999800250376377
+    },
+    {
+        "path": "965.jpg",
+        "similarity": 0.9999733058508526
+    },
+    {
+        "path": "97.jpg",
+        "similarity": 0.9999583674946364
+    },
+    {
+        "path": "99.jpg",
+        "similarity": 0.9999438546995292
+    },
+    {
+        "path": "98.jpg",
+        "similarity": 0.9999212179310946
+    },
+    {
+        "path": "967.jpg",
+        "similarity": 0.9999137310538747
+    },
+    {
+        "path": "966.jpg",
+        "similarity": 0.9998962701231439
+    },
+    {
+        "path": "962.jpg",
+        "similarity": 0.999875136636448
+    },
+    {
+        "path": "963.jpg",
+        "similarity": 0.999856206825605
     }
 ]

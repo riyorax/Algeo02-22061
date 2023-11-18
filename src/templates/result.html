@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../static/result_style.css">
 </head>
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="../static/resultScript.js"></script>
     <div id="loading" style="display: none">
         <img src="../static/assets/kuru2.gif" alt="Loading">
         <span>Loading<span class="dots"></span></span>
@@ -23,7 +25,7 @@
         <div class="left">
             <div class="item-box">
                 <div class="item-image">
-                    <img id="uploadPreview" src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
+                    <img id="uploadPreview" src="/static/image_upload/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
                     
                     <form action="/" method="POST" enctype="multipart/form-data" onsubmit="return checkUploadAndRedirect()">
                         <div class="side-div-top">
@@ -35,13 +37,18 @@
                             <span class="right-text">Texture</span>
                         </div>
                         <h3>Upload Image</h3>
-                        <input type="file" name="single_file" id="single_file">
-                        <br>
-                        <h3>Upload Dataset</h3>
-                        <input type="file" name="multiple_files" id="multiple_files" multiple>
+                        <input type="file" name="upload_image" id="upload_image" onchange="previewImage(this)">
                         <br>
                         <input type="submit" value="Search">
                     </form>
+
+                    <form id="uploadDatasetForm">
+                        <h3>Upload Dataset</h3>
+                        <input type="file" name="dataset_files" id="dataset_files" webkitdirectory directory multiple>
+                        <br>
+                        <input type="button" value="Upload Dataset" onclick="zipAndUploadDataset()">
+                    </form>
+
                     <form action="{{ url_for('download_pdf') }}" method="POST">
                         <input type="submit" value="Download PDF">
                     </form>
@@ -50,17 +57,17 @@
         </div>
         <div class="right">
             <div class="runtime">
-                <p>{{ total_images }} Results {{ runtime }} seconds</p>
+                <p>{{ total_images }} Results in {{ runtime }} seconds with {{ functionUsed }}</p>
             </div>
             <div class="item-box">
                 {% for item in data %}
                 <div class="item-image">
-                    <img src="/static/multiple_uploads/{{ item.path }}" alt="Image {{ item.path }}" max-height="200px", max-width = "200px">
-                    <p>"{{ item.similarity }}"</p>
+                    <img src="/static/dataset/{{ item.path }}" alt="Image {{ item.path }}" max-height="200px", max-width = "200px">
+                    <p>{{ item.similarity }}</p>
                 </div>
                 {% endfor %}
             </div>
-            <div class="pagination">
+            <!-- <div class="pagination">
                 {% set start_page = current_page - 2 if current_page > 2 else 1 %}
                 {% set end_page = current_page + 3 if current_page + 3 <= total_pages else total_pages + 1 %}
                 
@@ -81,31 +88,96 @@
                     {% endif %}
                     <a href="{{ url_for('result', page=total_pages) }}">>></a>
                 {% endif %}
+            </div> -->
+            <div class="pagination">
+                <a href="{{ url_for('result', page=1) }}">&laquo; First</a>
+                <a href="{{ url_for('result', page=(current_page-1) if current_page > 1 else 1) }}" {% if current_page == 1 %}class="disabled"{% endif %}>&lt; Prev</a>
+                
+                {% set start_page = current_page - 2 if current_page > 2 else 1 %}
+                {% set end_page = current_page + 3 if current_page + 3 <= total_pages else total_pages + 1 %}
+                
+                {% if start_page > 1 %}
+                    <span>...</span>
+                {% endif %}
+                
+                {% for page_num in range(start_page, end_page) %}
+                    <a href="{{ url_for('result', page=page_num) }}" {% if page_num == current_page %}class="active"{% endif %}>{{ page_num }}</a>
+                {% endfor %}
+                
+                {% if end_page < total_pages %}
+                    <span>...</span>
+                {% endif %}
+                
+                <a href="{{ url_for('result', page=(current_page+1) if current_page < total_pages else total_pages) }}" {% if current_page == total_pages %}class="disabled"{% endif %}>Next &gt;</a>
+                <a href="{{ url_for('result', page=total_pages) }}">Last &raquo;</a>
             </div>
         </div>
     </div>
-    <script>
-        function previewImage() {
+    <!-- <script>
+        function previewImage(input) {
             var preview = document.getElementById('uploadPreview');
-            var file    = document.getElementById('single_file').files[0];
-            var reader  = new FileReader();
-
-            reader.onloadend = function () {
-                preview.src = reader.result;
-            }
-
-            if (file) {
-                reader.readAsDataURL(file);
+            
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
             } else {
-                preview.src = "src/assets/static/placeholder.png";
+                preview.src = 'src/static/placeholder.png';
             }
         }
         function checkUploadAndRedirect() {
-        var singleFileInput = document.getElementById('single_file');
-        var multipleFilesInput = document.getElementById('multiple_files');
+        var uploadImageInput = document.getElementById('upload_image');
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+
+    function zipAndUploadDataset() {
+
+        var datasetFiles = document.getElementById('dataset_files').files;
+
+        if (datasetFiles.length === 0) {
+            alert('Please select a dataset to upload.');
+            return;
+        }
+
         document.getElementById('loading').style.display = 'flex';
-        return true;
+
+        var zip = new JSZip();
+
+        for (var i = 0; i < datasetFiles.length; i++) {
+            var file = datasetFiles[i];
+            zip.file(file.webkitRelativePath || file.name, file);
+        }
+
+        zip.generateAsync({type: "blob"})
+            .then(function(content) {
+                var formData = new FormData();
+                formData.append('zip_file', content, 'dataset.zip');
+
+                return fetch('/upload_dataset', {
+                    method: 'POST',
+                    body: formData
+                });
+            })
+            .then(response => {
+                document.getElementById('loading').style.display = 'none';
+
+                if (response.ok) {
+                    alert('Dataset has been successfully uploaded.');
+                } else {
+                    console.error('Upload failed:', response.statusText);
+                    alert('Failed to upload dataset.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                alert('An error occurred during upload.');
+            });
     }
-    </script>
+    </script> -->
 </body>
 </html>
