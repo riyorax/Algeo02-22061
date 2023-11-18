@@ -18,14 +18,14 @@
     <div class="main-container">
         <div class="item-box">
             <div class="item-image">
-                <img src="/static/single_uploads/{{ single_file_name }}" alt="Image" height="200px">
+                <img src="/static/single_uploads/{{ single_file_name }}" alt="Image" max-height="200px", max-width = "200px">
                 <p>"Test single image"</p>
             </div>
         </div>
         <div class="item-box">
             {% for item in data %}
             <div class="item-image">
-                <img src="/static/multiple_uploads/{{ item.path }}" alt="Image {{ item.path }}" height="200px">
+                <img src="/static/multiple_uploads/{{ item.path }}" alt="Image {{ item.path }}" max-height="200px", max-width = "200px">
                 <p>"{{ item.similarity }}"</p>
             </div>
             {% endfor %}
