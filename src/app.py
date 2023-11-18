@@ -46,6 +46,8 @@ def empty_folder(folder_path):
 @app.route('/', methods=['POST'])
 def upload_files():
 
+    toggle_state = 'on' if 'toggleSwitch' in request.form else 'off'
+
     os.makedirs(app.config['SINGLE_UPLOAD_FOLDER'], exist_ok=True)
     os.makedirs(app.config['MULTIPLE_UPLOAD_FOLDER'], exist_ok=True)
 
@@ -63,11 +65,18 @@ def upload_files():
             multiple_filename = os.path.join(app.config['MULTIPLE_UPLOAD_FOLDER'], secure_filename(file.filename))
             file.save(multiple_filename)
 
-    if 'single_file' in request.files:
-        CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
-        single_file_name = get_single_file_name('src/static/single_uploads')
-        single_file_name = 'src/static/single_uploads/' + single_file_name 
-        CC.SimilarityColour(single_file_name, 'src/data/colour.json','src/data/colourSimilarity.json')
+    if toggle_state == 'off':
+        if 'single_file' in request.files:
+            CC.DatasetToColourJSON('src/static/multiple_uploads', 'src/data/colour.json')
+            single_file_name = get_single_file_name('src/static/single_uploads')
+            single_file_name = 'src/static/single_uploads/' + single_file_name 
+            CC.SimilarityColour(single_file_name, 'src/data/colour.json','src/data/similarity.json')
+    else:
+        if 'single_file' in request.files:
+            CT.DatasetToTextureJSON('src/static/multiple_uploads', 'src/data/texture.json')
+            single_file_name = get_single_file_name('src/static/single_uploads')
+            single_file_name = 'src/static/single_uploads/' + single_file_name 
+            CT.SimilarityTexture(single_file_name, 'src/data/colour.json','src/data/similarity.json')
 
     return redirect(url_for('result',page =1))
 
@@ -77,13 +86,12 @@ def upload_files():
 
 
 
-@app.route('/result/<int:page>')
+@app.route('/result/<int:page>', methods=['GET'])
 def result(page=1):
-    with open('src/data/colourSimilarity.json', 'r') as file:
+    with open('src/data/similarity.json', 'r') as file:
         dummy_data = json.load(file)
 
     items_per_page = 10
-    page = int(request.args.get('page', 1))
 
     start_idx = (page - 1) * items_per_page
     end_idx = start_idx + items_per_page

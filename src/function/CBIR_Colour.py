@@ -61,7 +61,8 @@ def SimilarityColour(img_path, colour_json_path, colour_similar_json_path):
             segment_similarities.append(similarity)
         
         avg = np.mean(segment_similarities)
-        similarities.append({'path': img_dataset['path'], 'similarity': avg})
+        if avg >= 0.6:
+            similarities.append({'path': img_dataset['path'], 'similarity': avg})
 
     similarities = sorted(similarities, key=lambda x: x['similarity'], reverse=True)
     
