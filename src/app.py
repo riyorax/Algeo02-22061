@@ -258,8 +258,8 @@ def download_pdf():
     pdf.add_page()
     pdf.set_font("Arial", size=12)
 
-    single_file_name = get_single_file_name('src/static/single_uploads')
-    single_image_path = f'src/static/single_uploads/{single_file_name}'
+    single_file_name = get_single_file_name('src/static/image_upload')
+    single_image_path = f'src/static/image_upload/{single_file_name}'
     img_width, img_height = get_image_dimensions(single_image_path)
 
     pdf.ln(5)
@@ -268,9 +268,9 @@ def download_pdf():
     pdf.ln(5)
 
     if img_width > img_height:  
-        pdf.image(f'src/static/single_uploads/{single_file_name}', x=10 , y=None, w=50)
+        pdf.image(f'src/static/image_upload/{single_file_name}', x=10 , y=None, w=50)
     else:  
-        pdf.image(f'src/static/single_uploads/{single_file_name}', x=10 , y=None, h=50)
+        pdf.image(f'src/static/image_upload/{single_file_name}', x=10 , y=None, h=50)
 
     pdf.set_font("Arial", size=12)
     pdf.cell(0, 10, "Compared Image", ln=True, align='L')
@@ -290,7 +290,7 @@ def download_pdf():
 
     response = Response(pdf.output(dest='S').encode('latin1'))
     response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; algeolens.pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename="algeolens.pdf"'
 
     return response
 

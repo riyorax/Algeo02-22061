@@ -46,6 +46,18 @@ h1 {
     border-radius: 10px;
 }
 
+.box-youtube {
+    margin: 1.1vw 2.5vh;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-white);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
 .box .text{
     display: flex;
     justify-content: center;

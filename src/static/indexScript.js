@@ -14,17 +14,28 @@ function previewImage(input) {
 }
 
 function zipAndUploadDataset() {
+
     var datasetFiles = document.getElementById('dataset_files').files;
+
     if (datasetFiles.length === 0) {
         alert('Please select a dataset to upload.');
         return;
     }
+
     document.getElementById('loading').style.display = 'flex';
+
     var zip = new JSZip();
+    var allowedExtensions = ['png', 'jpg', 'jpeg', 'bmp'];
+
     for (var i = 0; i < datasetFiles.length; i++) {
         var file = datasetFiles[i];
-        zip.file(file.webkitRelativePath || file.name, file);
+        var fileExtension = file.name.split('.').pop().toLowerCase();
+
+        if (allowedExtensions.includes(fileExtension)) {
+            zip.file(file.webkitRelativePath || file.name, file);
+        }
     }
+
     zip.generateAsync({type: "blob"})
         .then(function(content) {
             var formData = new FormData();
@@ -51,7 +62,6 @@ function zipAndUploadDataset() {
             alert('An error occurred during upload.');
         });
 }
-
 function checkUploadAndRedirect() {
     var uploadImageInput = document.getElementById('upload_image');
     if (!uploadImageInput.files.length) {
