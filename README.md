@@ -45,7 +45,10 @@ Reverse Image Search with:
 
 
 ## Screenshots
-![Web Frontpage](./src/static/assets/WebScreenshot.jpeg)
+![Web Frontpage](./img/WebScreenshot.jpeg)
+![Loading Page](./img/LoadingPage.jpg)
+![Sample](./img/Sample.jpg)
+![PDF](./img/PDF.jpg)
 
 
 ## Setup
@@ -68,7 +71,7 @@ python src/app.py
 ```
 Then python will host the website locally like the following image:
 
-![Running on](./src/static/assets/Runningon.png)
+![Running on](./img/Runningon.png)
 Here, the website is hosted locally, press <kbd>Ctrl</kbd> + <kbd>click</kbd> on the  <em>http://127.0.0.1:5000</em>
 
 
