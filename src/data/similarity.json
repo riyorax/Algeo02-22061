@@ -1,42 +1,38 @@
 [
     {
-        "path": "961.jpg",
-        "similarity": 1.0
+        "path": "trash4.jpeg",
+        "similarity": 0.7788942907513434
     },
     {
-        "path": "964.jpg",
-        "similarity": 0.9999800250376377
+        "path": "trash10.jpeg",
+        "similarity": 0.759808370045045
     },
     {
-        "path": "965.jpg",
-        "similarity": 0.9999733058508526
+        "path": "trash1.jpeg",
+        "similarity": 0.7557707704650215
     },
     {
-        "path": "97.jpg",
-        "similarity": 0.9999583674946364
+        "path": "trash6.jpeg",
+        "similarity": 0.7499252364952478
     },
     {
-        "path": "99.jpg",
-        "similarity": 0.9999438546995292
+        "path": "trash7.jpeg",
+        "similarity": 0.7408124028448894
     },
     {
-        "path": "98.jpg",
-        "similarity": 0.9999212179310946
+        "path": "trash2.jpg",
+        "similarity": 0.7392072001738338
     },
     {
-        "path": "967.jpg",
-        "similarity": 0.9999137310538747
+        "path": "trash3.jpeg",
+        "similarity": 0.7354120868789589
     },
     {
-        "path": "966.jpg",
-        "similarity": 0.9998962701231439
+        "path": "trash8.jpeg",
+        "similarity": 0.7077459374821868
     },
     {
-        "path": "962.jpg",
-        "similarity": 0.999875136636448
-    },
-    {
-        "path": "963.jpg",
-        "similarity": 0.999856206825605
+        "path": "trash9.jpeg",
+        "similarity": 0.7065647945755928
     }
 ]
