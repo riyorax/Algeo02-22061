@@ -20,45 +20,50 @@ var uploadImageInput = document.getElementById('upload_image');
 
 function zipAndUploadDataset() {
 
-var datasetFiles = document.getElementById('dataset_files').files;
+    var datasetFiles = document.getElementById('dataset_files').files;
 
-if (datasetFiles.length === 0) {
-    alert('Please select a dataset to upload.');
-    return;
-}
+    if (datasetFiles.length === 0) {
+        alert('Please select a dataset to upload.');
+        return;
+    }
 
-document.getElementById('loading').style.display = 'flex';
+    document.getElementById('loading').style.display = 'flex';
 
-var zip = new JSZip();
+    var zip = new JSZip();
+    var allowedExtensions = ['png', 'jpg', 'jpeg', 'bmp'];
 
-for (var i = 0; i < datasetFiles.length; i++) {
-    var file = datasetFiles[i];
-    zip.file(file.webkitRelativePath || file.name, file);
-}
+    for (var i = 0; i < datasetFiles.length; i++) {
+        var file = datasetFiles[i];
+        var fileExtension = file.name.split('.').pop().toLowerCase();
 
-zip.generateAsync({type: "blob"})
-    .then(function(content) {
-        var formData = new FormData();
-        formData.append('zip_file', content, 'dataset.zip');
-
-        return fetch('/upload_dataset', {
-            method: 'POST',
-            body: formData
-        });
-    })
-    .then(response => {
-        document.getElementById('loading').style.display = 'none';
-
-        if (response.ok) {
-            alert('Dataset has been successfully uploaded.');
-        } else {
-            console.error('Upload failed:', response.statusText);
-            alert('Failed to upload dataset.');
+        if (allowedExtensions.includes(fileExtension)) {
+            zip.file(file.webkitRelativePath || file.name, file);
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('loading').style.display = 'none';
-        alert('An error occurred during upload.');
-    });
+    }
+
+    zip.generateAsync({type: "blob"})
+        .then(function(content) {
+            var formData = new FormData();
+            formData.append('zip_file', content, 'dataset.zip');
+
+            return fetch('/upload_dataset', {
+                method: 'POST',
+                body: formData
+            });
+        })
+        .then(response => {
+            document.getElementById('loading').style.display = 'none';
+
+            if (response.ok) {
+                alert('Dataset has been successfully uploaded.');
+            } else {
+                console.error('Upload failed:', response.statusText);
+                alert('Failed to upload dataset.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('loading').style.display = 'none';
+            alert('An error occurred during upload.');
+        });
 }
