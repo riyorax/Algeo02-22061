@@ -277,9 +277,9 @@ def download_pdf():
     for i, data in enumerate(top_3_data): 
 
         if img_width > img_height:  
-            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=10 , y=None, w=50)
+            pdf.image(f'src/static/dataset/{data["path"]}' , x=10 , y=None, w=50)
         else:  
-            pdf.image(f'src/static/multiple_uploads/{data["path"]}' , x=10 , y=None, h=50) 
+            pdf.image(f'src/static/dataset/{data["path"]}' , x=10 , y=None, h=40) 
 
         similarity_text = f"Similarity: {data['similarity']}"
         pdf.cell(0, 10, similarity_text, ln=True, align='L') 

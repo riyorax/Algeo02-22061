@@ -99,6 +99,21 @@ input[type="submit"] {
     background-color: #45a049;
 }
 
+input[type="button"] {
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.input[type="button"]:hover {
+    background-color: #45a049;
+}
+
 .footer {
     margin-top: 20px;
 }
