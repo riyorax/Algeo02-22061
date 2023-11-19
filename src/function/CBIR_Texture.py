@@ -9,8 +9,7 @@ from multiprocessing import Pool
 def img2GRY(path):
     img_rgb = imt.ImageToMatrix(path)
     gray = img_rgb[:, :, 0] * 0.299 + img_rgb[:, :, 1] * 0.587 + img_rgb[:, :, 2] * 0.114 # Y = 0.299 * R + 0.587 * G + 0.114 * B
-    resize = cv2.resize(gray, None, fx = 0.4, fy = 0.4) # Resize gambar agar mudah diproses
-    return resize
+    return gray
 
 def glcm(path):
     img = img2GRY(path)
