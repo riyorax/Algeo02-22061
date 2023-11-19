@@ -211,6 +211,7 @@ def search():
 
 @app.route('/result/<int:page>', methods=['GET'])
 def result(page=1):
+    global runtimer
     runtime = request.args.get('runtime', default=runtimer, type=float)
     with open('src/data/similarity.json', 'r') as file:
         dummy_data = json.load(file)
