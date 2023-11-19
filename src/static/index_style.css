@@ -45,9 +45,9 @@ body {
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
     border-radius: 10px; 
-    flex-direction: column;  /* Stack children vertically */
-    align-items: center;     /* Center children horizontally */
-    justify-content: center; /* Center children vertically */
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
 }
 
 .side-div-top {
@@ -113,11 +113,6 @@ input[type="button"] {
 .input[type="button"]:hover {
     background-color: #45a049;
 }
-
-.footer {
-    margin-top: 20px;
-}
-
 
 .toggle-text {
     display: flex;

@@ -159,6 +159,8 @@ def upload_dataset():
 
 #     return redirect(url_for('result',page =1, runtime = runtime))
 
+# Searching
+
 @app.route('/', methods=['POST'])
 def search():
     global processedTexture
@@ -214,9 +216,9 @@ def result(page=1):
     global runtimer
     runtime = request.args.get('runtime', default=runtimer, type=float)
     with open('src/data/similarity.json', 'r') as file:
-        dummy_data = json.load(file)
+        image_data = json.load(file)
     
-    for item in dummy_data:
+    for item in image_data:
         similarity = Decimal(str(item['similarity'])) * 100
         format_percentage = similarity.quantize(Decimal('.01'), rounding=ROUND_DOWN)
         item['similarity'] = f"{format_percentage}%"
@@ -226,11 +228,11 @@ def result(page=1):
     start_idx = (page - 1) * items_per_page
     end_idx = start_idx + items_per_page
 
-    current_page_data = dummy_data[start_idx:end_idx]
+    current_page_data = image_data[start_idx:end_idx]
 
-    total_pages = (len(dummy_data) + items_per_page - 1) // items_per_page
+    total_pages = (len(image_data) + items_per_page - 1) // items_per_page
 
-    total_images = len(dummy_data)
+    total_images = len(image_data)
 
     image_upload = get_single_file_name('src/static/image_upload')
     global functionUsed
@@ -291,6 +293,8 @@ def download_pdf():
     response.headers['Content-Disposition'] = 'attachment; algeolens.pdf'
 
     return response
+
+# Routing
 
 @app.route('/src/uploads/multiple_uploads/<path:filename>')
 def serve_image(filename):

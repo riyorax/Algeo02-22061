@@ -69,10 +69,4 @@ def SimilarityColour(img_path, colour_json_path, colour_similar_json_path):
     with open(colour_similar_json_path, 'w') as file:
         json.dump(similarities, file, indent=4)
 
-# if __name__ == '__main__':
-#     stime = time.time()
-#     DatasetToColourJSON('src/uploads/multiple_uploads','src/data/colour.json')
-#     # DatasetToColourJSON('src/function/img','src/data/colour.json')
-#     SimilarityColour('src/317.jpg','src/data/colour.json', 'src/data/colourSimilarity.json')
-#     ftime = time.time()
-#     print("Runtime: ", ftime-stime)
+

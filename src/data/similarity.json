@@ -1,46 +1,26 @@
 [
     {
-        "path": "trash10.jpeg",
-        "similarity": 0.9999982982885947
+        "path": "Screenshot 2023-11-19 140239.png",
+        "similarity": 1.0
     },
     {
-        "path": "trash8.jpeg",
-        "similarity": 0.9999951736498568
+        "path": "Screenshot 2023-11-19 140616.png",
+        "similarity": 0.9998007148584253
     },
     {
-        "path": "trash7.jpeg",
-        "similarity": 0.9999865534485608
+        "path": "Screenshot 2023-11-19 140643.png",
+        "similarity": 0.9997827365852745
     },
     {
-        "path": "trash6.jpeg",
-        "similarity": 0.9999844115071995
+        "path": "Screenshot 2023-11-19 135827.png",
+        "similarity": 0.9992511199051992
     },
     {
-        "path": "trash1.jpeg",
-        "similarity": 0.9999781190855852
+        "path": "Screenshot 2023-11-19 140634.png",
+        "similarity": 0.9989075693931082
     },
     {
-        "path": "trash5.jpeg",
-        "similarity": 0.9999767403700991
-    },
-    {
-        "path": "trash4.jpeg",
-        "similarity": 0.9999750802360103
-    },
-    {
-        "path": "trash9.jpeg",
-        "similarity": 0.9999028835613859
-    },
-    {
-        "path": "trash11.jpg",
-        "similarity": 0.9998350302034552
-    },
-    {
-        "path": "trash2.jpg",
-        "similarity": 0.9993065534142554
-    },
-    {
-        "path": "trash3.jpeg",
-        "similarity": 0.9991254232315187
+        "path": "Screenshot 2023-11-19 140229.png",
+        "similarity": 0.9973424207954886
     }
 ]

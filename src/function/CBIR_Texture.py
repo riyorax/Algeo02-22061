@@ -112,9 +112,3 @@ def SimilarityTexture(img_path,colour_json_path,colour_similiar_json_path):
     with open(colour_similiar_json_path, 'w') as file:
         json.dump(similarities, file, indent=4)
 
-# if __name__ == '__main__':
-#     stime = time.time()
-#     DatasetToTextureJSON('src/uploads/multiple_uploads','src/data/texture.json')
-#     SimilarityTexture('src/317.jpg','src/data/texture.json', 'src/data/textureSimilarity.json')
-#     ftime = time.time()
-#     print("Runtime: ", ftime-stime)

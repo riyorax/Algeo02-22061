@@ -67,28 +67,6 @@
                 </div>
                 {% endfor %}
             </div>
-            <!-- <div class="pagination">
-                {% set start_page = current_page - 2 if current_page > 2 else 1 %}
-                {% set end_page = current_page + 3 if current_page + 3 <= total_pages else total_pages + 1 %}
-                
-                {% if start_page > 1 %}
-                    <a href="{{ url_for('result', page=1) }}"><<</a>
-                    {% if start_page > 2 %}
-                        <span>...</span>
-                    {% endif %}
-                {% endif %}
-                
-                {% for page_num in range(start_page, end_page) %}
-                    <a href="{{ url_for('result', page=page_num) }}" {% if page_num == current_page %}class="active"{% endif %}>{{ page_num }}</a>
-                {% endfor %}
-                
-                {% if end_page <= total_pages %}
-                    {% if end_page < total_pages %}
-                        <span>...</span>
-                    {% endif %}
-                    <a href="{{ url_for('result', page=total_pages) }}">>></a>
-                {% endif %}
-            </div> -->
             <div class="pagination">
                 <a href="{{ url_for('result', page=1) }}">&laquo; First</a>
                 <a href="{{ url_for('result', page=(current_page-1) if current_page > 1 else 1) }}" {% if current_page == 1 %}class="disabled"{% endif %}>&lt; Prev</a>
@@ -113,71 +91,5 @@
             </div>
         </div>
     </div>
-    <!-- <script>
-        function previewImage(input) {
-            var preview = document.getElementById('uploadPreview');
-            
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.src = 'src/static/placeholder.png';
-            }
-        }
-        function checkUploadAndRedirect() {
-        var uploadImageInput = document.getElementById('upload_image');
-            document.getElementById('loading').style.display = 'flex';
-        }
-
-
-    function zipAndUploadDataset() {
-
-        var datasetFiles = document.getElementById('dataset_files').files;
-
-        if (datasetFiles.length === 0) {
-            alert('Please select a dataset to upload.');
-            return;
-        }
-
-        document.getElementById('loading').style.display = 'flex';
-
-        var zip = new JSZip();
-
-        for (var i = 0; i < datasetFiles.length; i++) {
-            var file = datasetFiles[i];
-            zip.file(file.webkitRelativePath || file.name, file);
-        }
-
-        zip.generateAsync({type: "blob"})
-            .then(function(content) {
-                var formData = new FormData();
-                formData.append('zip_file', content, 'dataset.zip');
-
-                return fetch('/upload_dataset', {
-                    method: 'POST',
-                    body: formData
-                });
-            })
-            .then(response => {
-                document.getElementById('loading').style.display = 'none';
-
-                if (response.ok) {
-                    alert('Dataset has been successfully uploaded.');
-                } else {
-                    console.error('Upload failed:', response.statusText);
-                    alert('Failed to upload dataset.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('loading').style.display = 'none';
-                alert('An error occurred during upload.');
-            });
-    }
-    </script> -->
 </body>
 </html>
