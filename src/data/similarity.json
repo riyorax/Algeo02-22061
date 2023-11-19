@@ -1,38 +1,42 @@
 [
     {
-        "path": "99.jpg",
+        "path": "966.jpg",
         "similarity": 1.0
     },
     {
-        "path": "98.jpg",
-        "similarity": 0.7986141937142159
-    },
-    {
-        "path": "966.jpg",
-        "similarity": 0.7940310623293725
-    },
-    {
-        "path": "961.jpg",
-        "similarity": 0.7690373140326247
-    },
-    {
         "path": "964.jpg",
-        "similarity": 0.757644434374295
+        "similarity": 0.834957183601907
     },
     {
         "path": "962.jpg",
-        "similarity": 0.7320567693252718
+        "similarity": 0.8163354053655072
+    },
+    {
+        "path": "98.jpg",
+        "similarity": 0.8076496394478481
+    },
+    {
+        "path": "99.jpg",
+        "similarity": 0.7940310623293725
     },
     {
         "path": "965.jpg",
-        "similarity": 0.7174047396373695
+        "similarity": 0.7770779962456122
+    },
+    {
+        "path": "961.jpg",
+        "similarity": 0.7683525788949614
     },
     {
         "path": "967.jpg",
-        "similarity": 0.6408478190407654
+        "similarity": 0.6963245585511155
     },
     {
         "path": "963.jpg",
-        "similarity": 0.6287695099469477
+        "similarity": 0.6726991432939977
+    },
+    {
+        "path": "97.jpg",
+        "similarity": 0.6543758197013126
     }
 ]
